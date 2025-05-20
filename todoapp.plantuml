@@ -1,0 +1,12 @@
+@startuml
+
+!theme plain
+top to bottom direction
+skinparam linetype ortho
+
+class IndexController
+class ToDo
+class ToDoController
+class TodoAppApplication
+
+@enduml
