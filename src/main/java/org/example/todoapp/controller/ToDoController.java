@@ -18,7 +18,7 @@ import java.util.List;
  *  und so kann ich routen aufrufen um das alles mal auszuprobieren
  *
  *
- *  Datenvalisierung:
+ *  Datenvalidierung:
  *  - über Annotationen in der Entity Klasse und @Valid Annotaton in Post methode
  *  - Validierung auch im Backend i.d. Business Logik, Frontend optional über js aber js kann man ausschalten
  *    wieso nicht auf DB verlagern: will DB austauschen können, je mehr ich in DB konfiguriere desto schwerer ist es sie später auszutauschen
@@ -34,9 +34,6 @@ import java.util.List;
  *          FieldInjection kann Attribut nicht final sein; Mit Controller kann ich leichter Testen weil ich eigene
  *          "Test-Service Klassen " rein geben; Autowired ermöglicht das nicht weil es eine Blackbox ist
  *
- *   - Exception: Business Schicht spricht andere Sprache als Präsentation-Layer i.e. in Business Schicht ist es eine TodoAlreadyExcistsException
- *          in Präsentation ist es ein Http-ErrorCode--> Mapping über Annotation in der Exception Klasse
-
  *
  *
  */

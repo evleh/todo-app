@@ -3,6 +3,10 @@
 
 - Notizen von 20.5. vervollständigen 
 
+## Exceptions
+Benötigen Mapping zwischen Business-Layer und Präsentation Layer da Exceptions in Präsentation Layer Http-ErrorCode entsprechen.
+- Annotation in Exception Klasse: `@ResponseStatus(HttpStatus.CONFLICT)`macht mapping zwischen Java-Klasse und HttpStatus 
+
 ## Docker
 ### Wieso: 
 Wir verwenden Docker um unsere postgres Datenbank einzubinden. Dazu verwenden wir ein vorkonfiguriertes 
