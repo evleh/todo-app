@@ -3,6 +3,40 @@
 
 - Notizen von 20.5. vervollständigen 
 
+## Service Klasse in Controller einbinden 
+Service-Klasse wird als Attribut in der Controller KLasse in diese eingebunden. Wir haben 2 Versionen des Konzepts 
+Dependency Injection (FieldInjection und ConstructorInjection) kennengelernt. 
+
+Allgemein Dependency Injection: Man versucht Objekte von außen zu bekommen anstatt sie in der eigenen Klasse zu erzeugen 
+(i.e. nicht selber new Object() aufrufen). Dadurch kann ich verantwortung über diese Klasse abgeben. 
+
+Vorteile ConstructorInjection: 
+- Attribut kann final sein 
+- Testen ist leichter weil ich im Konstruktor ServiceKlasse als Testklasse übergeben kann und nicht Blackbox Code 
+von Autowired habe. 
+- Allgemein ist Autowired schwerer zu kontrollieren weil Black Box 
+
+
+Bsp Code: 
+```
+// FieldInjection
+@RestController
+public class Controller {
+   @Autowired
+   private ServiceClass serviceClass; 
+} 
+```
+
+```
+// ConstructorInjection
+@RestController
+public class Controller {
+   private ServiceClass serviceClass; 
+   public Controller(ServiceClass serviceClass){ ... }; 
+} 
+```
+
+
 ## Exceptions
 Benötigen Mapping zwischen Business-Layer und Präsentation Layer da Exceptions in Präsentation Layer Http-ErrorCode entsprechen.
 - Annotation in Exception Klasse: `@ResponseStatus(HttpStatus.CONFLICT)`macht mapping zwischen Java-Klasse und HttpStatus 

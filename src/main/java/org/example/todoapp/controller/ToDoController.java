@@ -26,16 +26,6 @@ import java.util.List;
  *
  *  - to-do Klassse ist in allen Schichten: cleane architektur hätte response-objekte in der Presentaion layer (Create-to-do: Validation object oder DTOs)
  *          Bsp.: wie ResponseObject i.d. Präsentation (so würde es Marvin machen): Erzeugt aus Post-Request (hat keine id) fertige Business-Logik Objekte und übergibt diese an Business-Schicht
- *
- *
- *  -ToDoService über Controller verwendbar machen Service Klasse soll über Dependency Injection in den Controller
- *          Autowired verwendet FIeldInjection ; wir machen Constructor Injection
- *          Wieso Constructor Construction besser als FieldInjection: Service klasse kann nicht null sein und bei
- *          FieldInjection kann Attribut nicht final sein; Mit Controller kann ich leichter Testen weil ich eigene
- *          "Test-Service Klassen " rein geben; Autowired ermöglicht das nicht weil es eine Blackbox ist
- *
- *
- *
  */
 @RestController
 @RequestMapping("/todos")
