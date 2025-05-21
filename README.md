@@ -28,11 +28,61 @@
 
 
 ## Projekt Erstellen und Setup 
+- Projekt erstellen: New Project mit Maven, Java und JDK 21, Dependencies Spring Web (Dependencies kann man später noch rein geben)
+- Wichtigste Dateien nach dem Setup
+  - pom.xml
+  - ToDoAppApplication: hier kann ich Applikation starten, auf der Console sehe ich auf welchem Port die Applikation läuft
+  - Testen ob alles funktioniert hat: Applikation starten und wenn ich 404 (?) bekomme, ist alles okay
+- Controller und Entity Package 
+
 
 ## Rest und Controller Implementation 
-### Rest
+### Rest Allgemein 
 REST (Representational State Transfer) ist Software Architektur Style der Richlinien fürs
-Implementieren von Web Services definiert. 
+Implementieren von Web Services definiert (u.a. wie man paths benennt). 
+
+1. Uniform Interface: Benennung von Routen und Endpunkten
+2. gedacht für Client-Server Architektur
+3. Layered System
+4. Stateless: Jedes mal wenn ich einen Http-Request sende müssen alle Infos in diesem inkludiert sein. 
+Bsp. für Statefull wäre wenn wir z.b. speichern das wir einen Login gemacht haben. __Wieso:__ verbessert die Perfomance da 
+alle Anfragen von jedem Server beantwortet werden können. 
+5. Cashable: Anfragen können in den Zwischenspeicher gespeichert werden. Das heißt, dass wenn ich in einem bestimmten Zeitraum die gleiche Anfrage stelle, 
+bekomme ich immer dieselbe Antwort. Das verbessert die Performance aber bedeutet auch, dass ich nicht immer die aktuellste Antwort habe (Cash weiß nicht ob sich am Server was geändert hat). 
+6. Aktuell egal, nicht in VO besprochen 
+
+https://www.visual-paradigm.com/guide/development/what-is-rest-api/
+
+### CRUD (Antwort von ChatGPT)
+CRUD ist ein Konzept aus der Softwareentwicklung, das die vier Grundoperationen für Daten beschreibt:
+
+| Operation | Bedeutung          | Beispiel                      |
+| --------- | ------------------ | ----------------------------- |
+| **C**     | Create (Erstellen) | Einen neuen Datensatz anlegen |
+| **R**     | Read (Lesen)       | Daten abfragen/anzeigen       |
+| **U**     | Update (Ändern)    | Daten aktualisieren           |
+| **D**     | Delete (Löschen)   | Daten entfernen               |
+
+
+Zusammenhang CRUD und REST: REST verwendet HTTP-Methoden, um CRUD-Operationen umzusetzen.
+
+### Rest hier: Benennung der Paths die über Mapping in Controller-Klasse definiert werden 
+Für uns ist die Benennung der Endpunkte am wichtigsten. Die Endpunkte werden in der Controller-Klasse definiert. 
+Jede Entity hat eine eigene Controller-Klasse. 
+Bsp.: Benennung der Endpunkte anhand der Entity Klasse `Todo`
+
+
+| Methode  | Bsp Path für Entity-Klasse `Todo` | Bedeutung                       | 
+| -------- |-----------------------------------|---------------------------------| 
+| `GET`    | /todos                            | ALLE Daten vom Server **holen** |
+| `GET`    | /todos/{id}                       | ALLE Daten vom Server **holen** |
+| `POST`   | /todos                            | Neue Daten **erstellen**        | 
+| `PUT`    | /todos/{id}                       | Daten **aktualisieren**         | 
+| `DELETE` | /todos/{id}                       | Daten **löschen**               |
+
+
+
+
 
 ## Implementierung der CRUD-Methoden (todo:überarbeiten )
 Einbinden: SpringDoc OpenAPI Starter WebMVC UI (in pom.xml)
