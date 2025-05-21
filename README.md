@@ -36,6 +36,21 @@ public class Controller {
 } 
 ```
 
+## Implementierung der CRUD-Methoden (todo:überarbeiten )
+Einbinden: SpringDoc OpenAPI Starter WebMVC UI (in pom.xml)
+swagger: kann json doc aus meinem code für documentationmachen und mit swagger visualisieren (ist dann in resources/application.properties)
+und so kann ich routen aufrufen um das alles mal auszuprobieren
+
+## Datenvalidierung (todo:überarbeiten )
+über Annotationen in der Entity Klasse und @Valid Annotaton in Post methode
+Validierung auch im Backend i.d. Business Logik, Frontend optional über js aber js kann man ausschalten
+wieso nicht auf DB verlagern: will DB austauschen können, je mehr ich in DB konfiguriere desto schwerer ist es sie später auszutauschen
+ResponseStatus Annotation
+
+## Architektur Input zu Schichten Trennung (todo:überarbeiten )
+
+to-do Klasse ist in allen Schichten: cleane architektur hätte response-objekte in der Presentaion layer (Create-to-do: Validation object oder DTOs)
+Bsp.: wie ResponseObject i.d. Präsentation (so würde es Marvin machen): Erzeugt aus Post-Request (hat keine id) fertige Business-Logik Objekte und übergibt diese an Business-Schicht
 
 ## Exceptions
 Benötigen Mapping zwischen Business-Layer und Präsentation Layer da Exceptions in Präsentation Layer Http-ErrorCode entsprechen.
@@ -59,6 +74,8 @@ Diese Unabhängigkeit erleichtert gemeinsames Entwickeln und garantiert mir, das
 4. Troubleshooting:
    - Postgres Stoppen: sudo systemctl stop postgresql
    - Prüfen ob port frei ist: sudo lsof -i :5432
+   - `docker ps -a`: Anzeigen welche Container laufen  
+   - `docker compose up`: Start der yml Datei
 
 
 ### Andere Möglichkeiten Datenbanken einzubinden: 
