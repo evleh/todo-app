@@ -9,15 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * Starten mit Spring:
- * - Projekt erstellen mit Dependencies
- * - Projekt Setup anhand der 3-Layer architektur (Controller / entity / Repository (erst erstellt als benötigt wurde) )
- * - 3-Layer Architektur:
- *   - Controller: Verantwortlich dafür, dass Http-Request an korrekte Funktion in der Logik weiter geleitet wird
- *   - Domain: Mit entity (Objekte die in DB gespeichert werden) und service hier wird Logik implementiert
- *   - Repository: Data Layer
- * - Controller setup anhand von Rest (?) für erstes Setup wurde immer nur null zurück gegeben +
- *
+
  * Implementierung Controller
  *      - @RestController: RestController kombiniert Controller und ResponseBody (?)
  *      - @RequestMapping

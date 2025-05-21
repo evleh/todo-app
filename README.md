@@ -1,5 +1,10 @@
 # Todo-App
 
+## Fragen: 
+- Ich verstehe nicht in welche Layer Entity-Objekte gehören. Sie sind die Daten mit denen ich arbeite und die
+  in der Data Layer gespeichert werden aber sie sind in der Domain sprache was für Business Layer sprechen würde.
+
+
 ## Was haben wir wann gemacht: 
 - UE1 (30.4.25): Client-Server Architektur, HTTP-Request + get, post, put, delete Methoden
 - UE2 (7.5.25): 3-Layer Backend Architektur, Anfang mit Spring Boot, REST, JSON, Controller Klasse einrichten 
@@ -26,6 +31,16 @@
 | `PUT`    | Daten **aktualisieren**    | 
 | `DELETE` | Daten **löschen**          |
 
+
+## 3-Layer Backend Architektur
+1. Presentation Layer: mit Controller der Verantwortlich dafür ist, dass Http-Request an korrekte Funktion in der Logik weiter geleitet wird
+2. Business Logic Layer: Hier befindet sich Anwendungskern, inkludiert Service Klassen, 
+    Hier spricht man Domain Sprache e.g. wenn ich eine Software zur LV-Verwaltung mache, sind hier Schüler:innen objekte 
+    und alle zugehörigen Services. 
+3. Data Access layer: Für Interaktion mit DB, abfragen und speichern von daten 
+
+ACHTUNG: Ich verstehe nicht in welche Layer Entity-Objekte gehören. Sie sind die Daten mit denen ich arbeite und die 
+in der Data Layer gespeichert werden aber sie sind in der Domain sprache was für Business Layer sprechen würde. 
 
 ## Projekt Erstellen und Setup 
 - Projekt erstellen: New Project mit Maven, Java und JDK 21, Dependencies Spring Web (Dependencies kann man später noch rein geben)
