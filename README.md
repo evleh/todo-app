@@ -32,7 +32,7 @@
 | `DELETE` | Daten **löschen**          |
 
 
-## 3-Layer Backend Architektur
+## 3-Layer Backend Architektur (nicht fertig)
 1. Presentation Layer: mit Controller der Verantwortlich dafür ist, dass Http-Request an korrekte Funktion in der Logik weiter geleitet wird
 2. Business Logic Layer: Hier befindet sich Anwendungskern, inkludiert Service Klassen, 
     Hier spricht man Domain Sprache e.g. wenn ich eine Software zur LV-Verwaltung mache, sind hier Schüler:innen objekte 
@@ -41,6 +41,12 @@
 
 ACHTUNG: Ich verstehe nicht in welche Layer Entity-Objekte gehören. Sie sind die Daten mit denen ich arbeite und die 
 in der Data Layer gespeichert werden aber sie sind in der Domain sprache was für Business Layer sprechen würde. 
+
+## Architektur Input zu Schichten Trennung (todo:überarbeiten)
+
+to-do Klasse ist in allen Schichten: cleane architektur hätte response-objekte in der Presentaion layer (Create-to-do: Validation object oder DTOs)
+Bsp.: wie ResponseObject i.d. Präsentation (so würde es Marvin machen): Erzeugt aus Post-Request (hat keine id) fertige Business-Logik Objekte und übergibt diese an Business-Schicht
+
 
 ## Projekt Erstellen und Setup 
 - Projekt erstellen: New Project mit Maven, Java und JDK 21, Dependencies Spring Web (Dependencies kann man später noch rein geben)
@@ -145,10 +151,6 @@ public class Controller {
 ```
 
 
-## Architektur Input zu Schichten Trennung (todo:überarbeiten)
-
-to-do Klasse ist in allen Schichten: cleane architektur hätte response-objekte in der Presentaion layer (Create-to-do: Validation object oder DTOs)
-Bsp.: wie ResponseObject i.d. Präsentation (so würde es Marvin machen): Erzeugt aus Post-Request (hat keine id) fertige Business-Logik Objekte und übergibt diese an Business-Schicht
 
 ## Exceptions
 Benötigen Mapping zwischen Business-Layer und Präsentation Layer da Exceptions in Präsentation Layer Http-ErrorCode entsprechen.
