@@ -1,5 +1,38 @@
 # Todo-App
 
+## Was haben wir wann gemacht: 
+- UE1 (30.4.25): Client-Server Architektur, HTTP-Request + get, post, put, delete Methoden
+- UE2 (7.5.25): 3-Layer Backend Architektur, Anfang mit Spring Boot, REST, JSON, Controller Klasse einrichten 
+  (Annotationen, Service-Klasse noch nicht eingerichtet), CRUD
+- UE3 (20.5.25): Alles ab Implementierung der CRUD-Methoden
+
+### HTTP (Erklärung von ChatGPT )
+- __HTTP__ steht für __HyperText Transfer Protocol__. Protokoll das zur Datenübertragung zwischen Client-Server verwendet wird. 
+- Der Client sendet eine Anfrage (Request), der Server gibt eine Antwort (Response) zurück.
+
+| Begriff          | Erklärung                                                             |
+| ---------------- | --------------------------------------------------------------------- |
+| **Request**      | Eine Anfrage vom Client an den Server                                 |
+| **Response**     | Eine Antwort vom Server auf die Anfrage                               |
+| **HTTP-Methode** | Gibt an, **was** der Client tun will (z. B. Daten holen, senden etc.) |
+| **Statuscode**   | Antwort-Code vom Server (z. B. 200 = OK, 404 = nicht gefunden)        |
+| **Header**       | Metadaten (z. B. Inhaltstyp, Sprache, Authentifizierung etc.)         |
+| **Body**         | Der Inhalt (z. B. JSON-Daten), der übertragen wird                    |
+
+| Methode  | Bedeutung                  | 
+| -------- | -------------------------- | 
+| `GET`    | Daten vom Server **holen** |
+| `POST`   | Neue Daten **erstellen**   | 
+| `PUT`    | Daten **aktualisieren**    | 
+| `DELETE` | Daten **löschen**          |
+
+
+## Projekt Erstellen und Setup 
+
+## Rest und Controller Implementation 
+### Rest
+REST (Representational State Transfer) ist Software Architektur Style der Richlinien fürs
+Implementieren von Web Services definiert. 
 
 ## Implementierung der CRUD-Methoden (todo:überarbeiten )
 Einbinden: SpringDoc OpenAPI Starter WebMVC UI (in pom.xml)
