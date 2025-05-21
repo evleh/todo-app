@@ -1,7 +1,17 @@
 # Todo-App
 
 
-- Notizen von 20.5. vervollständigen 
+## Implementierung der CRUD-Methoden (todo:überarbeiten )
+Einbinden: SpringDoc OpenAPI Starter WebMVC UI (in pom.xml)
+swagger: kann json doc aus meinem code für documentationmachen und mit swagger visualisieren (ist dann in resources/application.properties)
+und so kann ich routen aufrufen um das alles mal auszuprobieren
+
+## Datenvalidierung (todo:überarbeiten )
+über Annotationen in der Entity Klasse und @Valid Annotaton in Post methode
+Validierung auch im Backend i.d. Business Logik, Frontend optional über js aber js kann man ausschalten
+wieso nicht auf DB verlagern: will DB austauschen können, je mehr ich in DB konfiguriere desto schwerer ist es sie später auszutauschen
+ResponseStatus Annotation
+
 
 ## Service Klasse in Controller einbinden 
 Service-Klasse wird als Attribut in der Controller KLasse in diese eingebunden. Wir haben 2 Versionen des Konzepts 
@@ -36,18 +46,8 @@ public class Controller {
 } 
 ```
 
-## Implementierung der CRUD-Methoden (todo:überarbeiten )
-Einbinden: SpringDoc OpenAPI Starter WebMVC UI (in pom.xml)
-swagger: kann json doc aus meinem code für documentationmachen und mit swagger visualisieren (ist dann in resources/application.properties)
-und so kann ich routen aufrufen um das alles mal auszuprobieren
 
-## Datenvalidierung (todo:überarbeiten )
-über Annotationen in der Entity Klasse und @Valid Annotaton in Post methode
-Validierung auch im Backend i.d. Business Logik, Frontend optional über js aber js kann man ausschalten
-wieso nicht auf DB verlagern: will DB austauschen können, je mehr ich in DB konfiguriere desto schwerer ist es sie später auszutauschen
-ResponseStatus Annotation
-
-## Architektur Input zu Schichten Trennung (todo:überarbeiten )
+## Architektur Input zu Schichten Trennung (todo:überarbeiten)
 
 to-do Klasse ist in allen Schichten: cleane architektur hätte response-objekte in der Presentaion layer (Create-to-do: Validation object oder DTOs)
 Bsp.: wie ResponseObject i.d. Präsentation (so würde es Marvin machen): Erzeugt aus Post-Request (hat keine id) fertige Business-Logik Objekte und übergibt diese an Business-Schicht
@@ -70,12 +70,13 @@ Diese Unabhängigkeit erleichtert gemeinsames Entwickeln und garantiert mir, das
 3. Starten von Docker (Docker muss immer laufen, wenn cih die Applikation verwende)
    - sudo docker run -p "5432:5432" -e POSTGRES_USER=eww -e POSTGRES_PASSWORD=eww -e POSTGRES_DB=todoapp postgres
    - docker-compose.yml in cmd starten mit docker compose up (yml ist wie json nur ohne klammern (?); scope wird nicht durch Klammern sondern durch Formatierung definiert (wie bei python))
-   - Erklärungen:`-p "5432:5432"`: Port-forwarding vom local host port 5432 auf docker port 5432. 
+   - Erklärungen:`-p "5432:5432"`: Port-forwarding vom local host port 5432 auf docker port 5432.
 4. Troubleshooting:
    - Postgres Stoppen: sudo systemctl stop postgresql
    - Prüfen ob port frei ist: sudo lsof -i :5432
    - `docker ps -a`: Anzeigen welche Container laufen  
-   - `docker compose up`: Start der yml Datei
+   - `docker compose up`: Start der yml Datei (Achtung: Windows Docker Manuell starten)
+   - `docker compose down`: Docker stoppen 
 
 
 ### Andere Möglichkeiten Datenbanken einzubinden: 
