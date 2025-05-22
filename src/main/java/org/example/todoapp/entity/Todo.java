@@ -25,6 +25,13 @@ public class Todo {
         this.done = done;
     }
 
+    public Todo(String task, LocalDateTime due) {
+        this.id = UUID.randomUUID().toString();
+        this.task = task;
+        this.due = due;
+        this.done = false;
+    }
+
     public Todo() {
         this.id = UUID.randomUUID().toString();
     }
@@ -33,14 +40,7 @@ public class Todo {
         return id;
     }
 
-    /**
-     * Default Contructor für später nötig
-     */
-//    public ToDo() {
-//        this.task = "Dummy Task";
-//        this.due = null;
-//        this.done = false;
-//    }
+
 
     public String getTask() {
         return task;

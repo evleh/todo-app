@@ -106,7 +106,16 @@ Bsp.: Benennung der Endpunkte anhand der Entity Klasse `Todo`
 
 
 ## Implementierung der CRUD-Methoden (todo:überarbeiten )
-Einbinden: SpringDoc OpenAPI Starter WebMVC UI (in pom.xml)
+### Swagger 
+- Was ist swagger: 
+- Einbinden von Sagger über Dependency in pom.xml. (Hier findet man Code für Dependency: https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui) 
+- Angabe von Verwendung von Swagger in __application.properties__ file mit
+    ``` 
+  # api documentation
+    springdoc.api-docs.path=/api
+    springdoc.swagger-ui.path=/swagger.html
+  ```
+- Swagger aufrufen: 
 swagger: kann json doc aus meinem code für documentationmachen und mit swagger visualisieren (ist dann in resources/application.properties)
 und so kann ich routen aufrufen um das alles mal auszuprobieren
 
@@ -161,7 +170,7 @@ Benötigen Mapping zwischen Business-Layer und Präsentation Layer da Exceptions
 Wir verwenden Docker um unsere postgres Datenbank einzubinden. Dazu verwenden wir ein vorkonfiguriertes 
 Docker image auf dem die DB gut läuft. 
 
-Andere verwendung von Docker wäre darin zu Entwickeln. Dadurch kann ich die Applikation von dem eigenen System unabhängig machen. 
+Andere verwendung von Docker wäre darin zu Entwicke. Dadurch kann ich die Applikation von dem eigenen System unabhängig machen. 
 Diese Unabhängigkeit erleichtert gemeinsames Entwickeln und garantiert mir, dass die Anwendung auf jedem System läuft. 
 
 ### Docker: Wie verwenden 
@@ -173,7 +182,7 @@ Diese Unabhängigkeit erleichtert gemeinsames Entwickeln und garantiert mir, das
    - Erklärungen:`-p "5432:5432"`: Port-forwarding vom local host port 5432 auf docker port 5432.
 4. Troubleshooting:
    - Postgres Stoppen: sudo systemctl stop postgresql
-   - Prüfen ob port frei ist: sudo lsof -i :5432
+   - Prüfen ob port frei ist: `sudo lsof -i :5432`
    - `docker ps -a`: Anzeigen welche Container laufen  
    - `docker compose up`: Start der yml Datei (Achtung: Windows Docker Manuell starten)
    - `docker compose down`: Docker stoppen 

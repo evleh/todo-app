@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
 
@@ -39,12 +40,13 @@ public class ToDoController {
 
     @GetMapping
     public List<Todo> readAll(){
-        return null;
+        return this.todoService.readAll();
     }
 
     @GetMapping("/{id}")
     public Todo read(@PathVariable String id){
-        return null;
+       return this.todoService.read(id);
+
     }
 
     @PostMapping
@@ -55,12 +57,12 @@ public class ToDoController {
 
     @PutMapping("/{id}")
     public Todo update(@PathVariable String id, @RequestBody Todo todo){
-        return null;
+        return this.todoService.update(id, todo);
     }
 
     @DeleteMapping("/{id}")
     public Todo delete(@PathVariable String id){
-        return null;
+        return this.todoService.deleteByID(id);
     }
 
 }
