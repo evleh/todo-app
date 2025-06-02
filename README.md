@@ -221,3 +221,11 @@ werden könnte. Es ist eine Alternative zu null bei der weniger NullPointerExcep
 können. Wenn ich `Optional` zurück bekomme muss ich immer checken ob was in meinem Objekt ist. 
 - Interface hat CRUD-Methoden. Ich muss diese Methoden nicht implementieren da sie automatisiert vom Hibernate-Framework 
 implementiert werden i.e. CRUD-Methoden werden in SQL-Statements übersetzt. 
+
+### Validation
+1. Dependency in `pom.xml`
+2. In entity die Validation Annotation über das Attribut schreiben (e.g. `@NotBlank`) 
+3. Im Controller `@Valid` Annotation zum Paramter in der Methodenkopfzeile hinzufügen 
+
+Default Verhalten in Swagger ist, dass es einen `400 Http Response Status` macht und Spring wirft eine 
+`MethodArgumentNotValidException`.
