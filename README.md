@@ -11,6 +11,7 @@
   (Annotationen, Service-Klasse noch nicht eingerichtet), CRUD
 - UE3 (20.5.25): Alles ab Implementierung der CRUD-Methoden
 
+## HTTP
 ### HTTP (Erklärung von ChatGPT )
 - __HTTP__ steht für __HyperText Transfer Protocol__. Protokoll das zur Datenübertragung zwischen Client-Server verwendet wird. 
 - Der Client sendet eine Anfrage (Request), der Server gibt eine Antwort (Response) zurück.
@@ -30,6 +31,24 @@
 | `POST`   | Neue Daten **erstellen**   | 
 | `PUT`    | Daten **aktualisieren**    | 
 | `DELETE` | Daten **löschen**          |
+
+### HTTP Response Status Codes: 
+Geben an ob HTTP Request erfolgreich abgeschlossen wurde. In 5 Klassen aufgeteilt 
+Default verhalten von spring: 
+- 200 wen CRUD Methoden zu keiner Exception führen 
+- man kann einen ResponseStatus durch die `@ResponseStatus` Annotation zu Exceptions mappen. 
+In der Controller Methode brauche ich dann keine `@ResponseStatus`Annotation.
+
+Wichtigste HTTP Codes:
+
+| Nummer  | Erklärung |
+|---------|-----------|
+| **200** | OK        |
+| **201** | Created   |
+| **404** | Not Found |
+
+
+
 
 
 ## 3-Layer Backend Architektur (nicht fertig)
