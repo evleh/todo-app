@@ -1,9 +1,18 @@
 # Todo-App
+## Allgemein
+### Spring Allgemein
+- IoC Inversion of Control: Spring Container hat Kontrolle wird z.b. durch Dependency Injection, bei der das Framework die 
+Objekte erstellt,ermöglicht, ApplicationContext ist Spring IoC Container 
+- Dependency Injection: Spring macht Objekt Instanz 
+- Dependency Inversion 
+- Magic Beans: Instanz einer Klasse die von Spring Container verwaltet wird. Annotationen machen Klassen zu Beans  
+- Spring Container: Teil von Core Spring framework das alle Beans Managed. (Delete, create etc ) macht die Dependency Injection
+- POJO: Plain old Java Objects
 
-## Fragen: 
-- Ich verstehe nicht in welche Layer Entity-Objekte gehören. Sie sind die Daten mit denen ich arbeite und die
-  in der Data Layer gespeichert werden aber sie sind in der Domain sprache was für Business Layer sprechen würde.
-
+### Annotationen 
+- Supplement to Compiler/Runtime, Metadata, Ermöglicht Interaktion Mit compiler
+- Annotationen markieren Java Klassen als Beans die von Spring IoC Container verwaltet werden sollen 
+- 
 
 ## Was haben wir wann gemacht: 
 - UE1 (30.4.25): Client-Server Architektur, HTTP-Request + get, post, put, delete Methoden
@@ -13,25 +22,46 @@
 
 ## HTTP
 ### HTTP (Erklärung von ChatGPT )
-- __HTTP__ steht für __HyperText Transfer Protocol__. Protokoll das zur Datenübertragung zwischen Client-Server verwendet wird. 
+- __HTTP__ steht für __HyperText Transfer Protocol__. 
+- Protokoll das zur Datenübertragung zwischen Client-Server verwendet wird. 
 - Der Client sendet eine Anfrage (Request), der Server gibt eine Antwort (Response) zurück.
+- Wichtigste Begriffe   
 
-| Begriff          | Erklärung                                                             |
-| ---------------- | --------------------------------------------------------------------- |
-| **Request**      | Eine Anfrage vom Client an den Server                                 |
-| **Response**     | Eine Antwort vom Server auf die Anfrage                               |
-| **HTTP-Methode** | Gibt an, **was** der Client tun will (z. B. Daten holen, senden etc.) |
-| **Statuscode**   | Antwort-Code vom Server (z. B. 200 = OK, 404 = nicht gefunden)        |
-| **Header**       | Metadaten (z. B. Inhaltstyp, Sprache, Authentifizierung etc.)         |
-| **Body**         | Der Inhalt (z. B. JSON-Daten), der übertragen wird                    |
+    | Begriff          | Erklärung                                                             |
+    | ---------------- | --------------------------------------------------------------------- |
+    | **Request**      | Eine Anfrage vom Client an den Server                                 |
+    | **Response**     | Eine Antwort vom Server auf die Anfrage                               |
+    | **HTTP-Methode** | Gibt an, **was** der Client tun will (z. B. Daten holen, senden etc.) |
+    | **Statuscode**   | Antwort-Code vom Server (z. B. 200 = OK, 404 = nicht gefunden)        |
+    | **Header**       | Metadaten (z. B. Inhaltstyp, Sprache, Authentifizierung etc.)         |
+    | **Body**         | Der Inhalt (z. B. JSON-Daten), der übertragen wird                    |
 
-| Methode  | Bedeutung                  | 
-| -------- | -------------------------- | 
-| `GET`    | Daten vom Server **holen** |
-| `POST`   | Neue Daten **erstellen**   | 
-| `PUT`    | Daten **aktualisieren**    | 
-| `DELETE` | Daten **löschen**          |
 
+- Methoden
+
+    | Methode  | Bedeutung                  | 
+    | -------- | -------------------------- | 
+    | `GET`    | Daten vom Server **holen** |
+    | `POST`   | Neue Daten **erstellen**   | 
+    | `PUT`    | Daten **aktualisieren**    | 
+    | `DELETE` | Daten **löschen**          |
+
+- Aufbau http-request 
+    ```
+  HTTP-Method url?paramters version
+  Header
+  (Body)
+  ```
+    * parameters: hier können zusatz Infos für den Server rein z.b search parameter
+    * header: Meta daten wie User-Agent der infos über Browser gibt oder Accept was angibt welche Datentypen als response erwarted werden 
+    * body: optional bei Methoden wie POST mit Formolardaten
+
+- Aufbau HTTP-Response
+    ```
+    HTTP status code
+    header e.g.  Content type + length(Anzahl der chars im doc)
+    body: HTML, JSON, Files 
+    ```
 ### HTTP Response Status Codes: 
 Geben an ob HTTP Request erfolgreich abgeschlossen wurde. In 5 Klassen aufgeteilt 
 Default verhalten von spring: 
@@ -53,13 +83,10 @@ Wichtigste HTTP Codes:
 
 ## 3-Layer Backend Architektur (nicht fertig)
 1. Presentation Layer: mit Controller der Verantwortlich dafür ist, dass Http-Request an korrekte Funktion in der Logik weiter geleitet wird
-2. Business Logic Layer: Hier befindet sich Anwendungskern, inkludiert Service Klassen, 
+2. Business Logic Layer: Hier befindet sich Anwendungskern, inkludiert Service Klassen in denen die Logik implementiert werden , 
     Hier spricht man Domain Sprache e.g. wenn ich eine Software zur LV-Verwaltung mache, sind hier Schüler:innen objekte 
     und alle zugehörigen Services. 
-3. Data Access layer: Für Interaktion mit DB, abfragen und speichern von daten 
-
-ACHTUNG: Ich verstehe nicht in welche Layer Entity-Objekte gehören. Sie sind die Daten mit denen ich arbeite und die 
-in der Data Layer gespeichert werden aber sie sind in der Domain sprache was für Business Layer sprechen würde. 
+3. Data Access layer: Für Interaktion mit DB, abfragen und speichern von daten, hier sind entity-Klassen 
 
 ## Architektur Input zu Schichten Trennung (todo:überarbeiten)
 
@@ -78,18 +105,19 @@ Bsp.: wie ResponseObject i.d. Präsentation (so würde es Marvin machen): Erzeug
 
 ## Rest und Controller Implementation 
 ### Rest Allgemein 
-REST (Representational State Transfer) ist Software Architektur Style der Richlinien fürs
+REST (**Re**presentational **S**tate **T**ransfer) ist Software Architektur Style, der Richtlinien fürs
 Implementieren von Web Services definiert (u.a. wie man paths benennt). 
 
-1. Uniform Interface: Benennung von Routen und Endpunkten
-2. gedacht für Client-Server Architektur
+1. **Uniform Interface**: Benennung von Routen und Endpunkten
+2. gedacht für **Client-Server Architektur**
 3. Layered System
-4. Stateless: Jedes mal wenn ich einen Http-Request sende müssen alle Infos in diesem inkludiert sein. 
+4. **Stateless**: Jedes mal wenn ich einen Http-Request sende müssen alle Infos in diesem inkludiert sein. 
 Bsp. für Statefull wäre wenn wir z.b. speichern das wir einen Login gemacht haben. __Wieso:__ verbessert die Perfomance da 
 alle Anfragen von jedem Server beantwortet werden können. 
-5. Cashable: Anfragen können in den Zwischenspeicher gespeichert werden. Das heißt, dass wenn ich in einem bestimmten Zeitraum die gleiche Anfrage stelle, 
+Wenn Anwendung statefull sein soll, soll jeder HTTP-Request alle Authentifizierungsinformationen enthalten.
+5. **Cashable**: Anfragen können in den Zwischenspeicher gespeichert werden. Das heißt, dass wenn ich in einem bestimmten Zeitraum die gleiche Anfrage stelle, 
 bekomme ich immer dieselbe Antwort. Das verbessert die Performance aber bedeutet auch, dass ich nicht immer die aktuellste Antwort habe (Cash weiß nicht ob sich am Server was geändert hat). 
-6. Aktuell egal, nicht in VO besprochen 
+6. **Code on Demand** Aktuell egal, nicht in VO besprochen 
 
 https://www.visual-paradigm.com/guide/development/what-is-rest-api/
 
@@ -244,7 +272,16 @@ implementiert werden i.e. CRUD-Methoden werden in SQL-Statements übersetzt.
 ### Validation
 1. Dependency in `pom.xml`
 2. In entity die Validation Annotation über das Attribut schreiben (e.g. `@NotBlank`) 
-3. Im Controller `@Valid` Annotation zum Paramter in der Methodenkopfzeile hinzufügen 
+3. Im Controller `@Valid` Annotation zum Parameter in der Methodenkopfzeile hinzufügen 
 
 Default Verhalten in Swagger ist, dass es einen `400 Http Response Status` macht und Spring wirft eine 
 `MethodArgumentNotValidException`.
+
+
+# Authentification and Authorization 
+
+- neue Abhängigkeit: spring boot starter security (add starters in pom.xml)
+- neue Klasse org.example.todoapp.security.SecurityConfig mit Annotationen 
+  - @Configuration
+  - @EnableWebSecurity
+- Configuration org.example.todoapp.security.SecurityConfig 
