@@ -4,6 +4,7 @@ import org.example.todoapp.entity.Todo;
 import org.example.todoapp.exception.TodoIdNotFoundException;
 import org.example.todoapp.repository.TodoRepository;
 import org.example.todoapp.exception.TodoAlreadyExcistsException;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
