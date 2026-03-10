@@ -1,6 +1,8 @@
 package org.example.todoapp.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
 
@@ -16,25 +18,22 @@ public class Todo {
     private boolean done;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     public Todo(String task, LocalDateTime due, boolean done) {
-        this.id = UUID.randomUUID().toString();
         this.task = task;
         this.due = due;
         this.done = done;
     }
 
     public Todo(String task, LocalDateTime due) {
-        this.id = UUID.randomUUID().toString();
         this.task = task;
         this.due = due;
         this.done = false;
     }
 
-    public Todo() {
-        this.id = UUID.randomUUID().toString();
-    }
+    public Todo() {}
 
     public String getId() {
         return id;

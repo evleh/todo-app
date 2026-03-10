@@ -1,13 +1,13 @@
 package org.example.todoapp.controller;
 
 import jakarta.validation.Valid;
+import org.example.todoapp.dto.TodoUpdateRequest;
 import org.example.todoapp.entity.Todo;
 import org.example.todoapp.service.TodoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
 
@@ -56,8 +56,8 @@ public class ToDoController {
     }
 
     @PutMapping("/{id}")
-    public Todo update(@PathVariable String id, @RequestBody Todo todo){
-        return this.todoService.update(id, todo);
+    public Todo update(@PathVariable String id, @RequestBody TodoUpdateRequest request){
+        return this.todoService.update(id, request);
     }
 
     @DeleteMapping("/{id}")

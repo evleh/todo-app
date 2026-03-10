@@ -1,13 +1,11 @@
 package org.example.todoapp.service;
 
+import org.example.todoapp.dto.TodoUpdateRequest;
 import org.example.todoapp.entity.Todo;
 import org.example.todoapp.exception.TodoIdNotFoundException;
 import org.example.todoapp.repository.TodoRepository;
 import org.example.todoapp.exception.TodoAlreadyExcistsException;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,9 +18,12 @@ public class TodoService {
         this.todoRepository = todoRepository;
     }
 
-    public Todo update(String id, Todo todo){
-        //Todo: Methoden Körper implementieren
-        return null;
+    public Todo update(String id, TodoUpdateRequest request){
+        Todo todo = todoRepository.findById(id).orElseThrow(TodoIdNotFoundException::new);
+        todo.setDone(request.done());
+        todo.setDue(request.due());
+        todo.setTask(request.task());
+        return todoRepository.save(todo);
     }
 
 
