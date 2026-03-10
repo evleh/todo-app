@@ -1,14 +1,14 @@
 package org.example.todoapp.controller;
 
 import jakarta.validation.Valid;
+import org.example.todoapp.dto.TodoCreateRequest;
+import org.example.todoapp.dto.TodoResponse;
 import org.example.todoapp.dto.TodoUpdateRequest;
-import org.example.todoapp.entity.Todo;
 import org.example.todoapp.service.TodoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
 /**
 
  * Implementierung Controller
@@ -29,39 +29,38 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/todos") // für Mapping von http-request für den ganzen Controller
-public class ToDoController {
+public class TodoController {
 
     private final TodoService todoService;
 
-    public ToDoController(TodoService todoService){
+    public TodoController(TodoService todoService){
         this.todoService = todoService;
     }
 
 
     @GetMapping
-    public List<Todo> readAll(){
+    public List<TodoResponse> readAll(){
         return this.todoService.readAll();
     }
 
     @GetMapping("/{id}")
-    public Todo read(@PathVariable String id){
+    public TodoResponse read(@PathVariable String id){
        return this.todoService.read(id);
-
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Todo create(@RequestBody @Valid Todo todo){
+    public TodoResponse create(@RequestBody @Valid TodoCreateRequest todo){
         return this.todoService.create(todo);
     }
 
     @PutMapping("/{id}")
-    public Todo update(@PathVariable String id, @RequestBody TodoUpdateRequest request){
+    public TodoResponse update(@PathVariable String id, @RequestBody @Valid TodoUpdateRequest request){
         return this.todoService.update(id, request);
     }
 
     @DeleteMapping("/{id}")
-    public Todo delete(@PathVariable String id){
+    public TodoResponse delete(@PathVariable String id){
         return this.todoService.deleteByID(id);
     }
 

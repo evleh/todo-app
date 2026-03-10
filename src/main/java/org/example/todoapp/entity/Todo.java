@@ -12,16 +12,15 @@ import java.util.UUID;
 @Entity
 public class Todo {
 
-    @NotBlank
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
     private String task;
     private LocalDateTime due;
     private boolean done;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
-
-    public Todo(String task, LocalDateTime due, boolean done) {
+    public Todo(String id, String task, LocalDateTime due, boolean done) {
+        this.id = id;
         this.task = task;
         this.due = due;
         this.done = done;

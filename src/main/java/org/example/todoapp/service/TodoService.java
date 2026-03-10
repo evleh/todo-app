@@ -1,5 +1,7 @@
 package org.example.todoapp.service;
 
+import org.example.todoapp.dto.TodoCreateRequest;
+import org.example.todoapp.dto.TodoResponse;
 import org.example.todoapp.dto.TodoUpdateRequest;
 import org.example.todoapp.entity.Todo;
 import org.example.todoapp.exception.TodoIdNotFoundException;
@@ -10,6 +12,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+
+// Possible improvements: private helper method toResponse(Todo todo) to replace dublicated code
 @Service
 public class TodoService {
     private final TodoRepository todoRepository;
@@ -18,51 +22,40 @@ public class TodoService {
         this.todoRepository = todoRepository;
     }
 
-    public Todo update(String id, TodoUpdateRequest request){
+    public TodoResponse update(String id, TodoUpdateRequest request){
         Todo todo = todoRepository.findById(id).orElseThrow(TodoIdNotFoundException::new);
         todo.setDone(request.done());
         todo.setDue(request.due());
         todo.setTask(request.task());
-        return todoRepository.save(todo);
+        Todo updated = todoRepository.save(todo);
+        return new TodoResponse(updated.getId(), updated.getTask(), updated.getDue(), updated.isDone());
     }
 
 
-    public Todo create (Todo todo){
-        // check db for todo.name
-        // check if due date is the same
-        // throw error if true
-        Optional<Todo> todoCheck = todoRepository.findByTask(todo.getTask());
-        if(todo.isDone()){
+    public TodoResponse create (TodoCreateRequest todo){
+        Optional<Todo> todoCheck = todoRepository.findByTask(todo.task());
+        if(todoCheck.isPresent()){
             throw new TodoAlreadyExcistsException();
-        } else {
-            // else save to-do to db
-            return todoRepository.save(todo);
         }
-
+        Todo toSave = new Todo(todo.task(), todo.due());
+        Todo saved = todoRepository.save(toSave);
+        return new TodoResponse(saved.getId(), saved.getTask(), saved.getDue(), saved.isDone());
     }
 
-    public Todo read(String id){
-        Optional<Todo> task = todoRepository.findById(id);
-        if(task.isEmpty()){
-            //throw new TodoIdNotFoundException("Todo with id: " + id + " not found");
-            throw new TodoIdNotFoundException();
-        }
-
-        return task.get();
+    public TodoResponse read(String id){
+        Todo todo = todoRepository.findById(id).orElseThrow(TodoIdNotFoundException::new);
+        return new TodoResponse(todo.getId(), todo.getTask(), todo.getDue(), todo.isDone());
     }
 
-    public List<Todo> readAll(){
-        return todoRepository.findAll();
+    public List<TodoResponse> readAll(){
+        return todoRepository.findAll().stream().map(todo ->
+                new TodoResponse(todo.getId(), todo.getTask(), todo.getDue(), todo.isDone())).toList();
     }
 
-    public Todo deleteByID(String id){
-        Optional<Todo> task = todoRepository.findById(id);
-        if(task.isEmpty()){
-            //throw new TodoIdNotFoundException("Todo with id: " + id + " not found");
-            throw new TodoIdNotFoundException();
-        }
+    public TodoResponse deleteByID(String id){
+        Todo todo = todoRepository.findById(id).orElseThrow(TodoIdNotFoundException::new);
         todoRepository.deleteById(id);
-        return task.get();
+        return new TodoResponse(todo.getId(), todo.getTask(), todo.getDue(), todo.isDone());
 
     }
 }
