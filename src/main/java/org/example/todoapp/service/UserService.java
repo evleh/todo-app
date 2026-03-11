@@ -4,7 +4,6 @@ import org.example.todoapp.dto.UserResponse;
 import org.example.todoapp.dto.UserUpdateRequest;
 import org.example.todoapp.exception.EntityAlreadyExistsException;
 import org.example.todoapp.entity.MyUser;
-import org.example.todoapp.dto.UserCreateRequest;
 import org.example.todoapp.exception.EntityNotFoundException;
 import org.example.todoapp.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,7 +23,7 @@ public class UserService {
     }
 
     private static UserResponse toResponse(MyUser user){
-        return new UserResponse(user.getId(), user.getUsername(), user.getRole());
+        return new UserResponse(user.getId(), user.getUsername(), user.getRole().name());
     }
 
     public List<UserResponse> readAll(){
@@ -32,11 +31,11 @@ public class UserService {
     }
 
     public UserResponse create(UserCreateRequest registration) {
-        userRepository.findByUsername(registration.getUsername()).ifPresent(user -> {throw new EntityAlreadyExistsException();});
+        userRepository.findByUsername(registration.username()).ifPresent(user -> {throw new EntityAlreadyExistsException();});
 
         MyUser user = new MyUser();
-        user.setUsername(registration.getUsername());
-        user.setPassword(passwordEncoder.encode(registration.getPassword()));
+        user.setUsername(registration.username());
+        user.setPassword(passwordEncoder.encode(registration.password()));
 
         MyUser newUser = userRepository.save(user);
         return toResponse(newUser);
