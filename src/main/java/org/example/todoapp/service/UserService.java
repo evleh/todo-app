@@ -56,4 +56,10 @@ public class UserService {
         return toResponse(userRepository.save(existing));
     }
 
+    public UserResponse delete(String id){
+        MyUser user = userRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        userRepository.delete(user);
+        return toResponse(user);
+    }
+
 }
