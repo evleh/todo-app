@@ -3,23 +3,34 @@ package org.example.todoapp.service;
 import org.example.todoapp.dto.TodoCreateRequest;
 import org.example.todoapp.dto.TodoResponse;
 import org.example.todoapp.dto.TodoUpdateRequest;
+import org.example.todoapp.entity.MyUser;
 import org.example.todoapp.entity.Todo;
+import org.example.todoapp.exception.EntityNotFoundException;
 import org.example.todoapp.exception.TodoIdNotFoundException;
 import org.example.todoapp.repository.TodoRepository;
 import org.example.todoapp.exception.TodoAlreadyExcistsException;
+import org.example.todoapp.repository.UserRepository;
+import org.example.todoapp.security.UserPrincipal;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 
-// Possible improvements: private helper method toResponse(Todo todo) to replace dublicated code
 @Service
 public class TodoService {
     private final TodoRepository todoRepository;
+    private final UserRepository userRepository;
 
-    public TodoService(TodoRepository todoRepository) {
+    public TodoService(TodoRepository todoRepository, UserRepository userRepository) {
         this.todoRepository = todoRepository;
+        this.userRepository = userRepository;
+    }
+
+    private static TodoResponse toResponse(Todo todo){
+        MyUser owner = todo.getOwner();
+        String ownerId = owner != null ? owner.getId() : null; // prevent NullPointerException
+        return new TodoResponse(todo.getId(), todo.getTask(), todo.getDue(), todo.isDone(), ownerId);
     }
 
     public TodoResponse update(String id, TodoUpdateRequest request){
@@ -28,34 +39,35 @@ public class TodoService {
         todo.setDue(request.due());
         todo.setTask(request.task());
         Todo updated = todoRepository.save(todo);
-        return new TodoResponse(updated.getId(), updated.getTask(), updated.getDue(), updated.isDone());
+        return toResponse(updated);
     }
 
 
-    public TodoResponse create (TodoCreateRequest todo){
+    public TodoResponse create (TodoCreateRequest todo, UserPrincipal principal){
+        MyUser creator = userRepository.findById(principal.getUserId()).orElseThrow(EntityNotFoundException::new);
+
         Optional<Todo> todoCheck = todoRepository.findByTask(todo.task());
         if(todoCheck.isPresent()){
             throw new TodoAlreadyExcistsException();
         }
-        Todo toSave = new Todo(todo.task(), todo.due());
+        Todo toSave = new Todo(todo.task(), todo.due(), creator);
         Todo saved = todoRepository.save(toSave);
-        return new TodoResponse(saved.getId(), saved.getTask(), saved.getDue(), saved.isDone());
+        return toResponse(saved);
     }
 
     public TodoResponse read(String id){
         Todo todo = todoRepository.findById(id).orElseThrow(TodoIdNotFoundException::new);
-        return new TodoResponse(todo.getId(), todo.getTask(), todo.getDue(), todo.isDone());
+        return toResponse(todo);
     }
 
     public List<TodoResponse> readAll(){
-        return todoRepository.findAll().stream().map(todo ->
-                new TodoResponse(todo.getId(), todo.getTask(), todo.getDue(), todo.isDone())).toList();
+        return todoRepository.findAll().stream().map(TodoService::toResponse).toList();
     }
 
     public TodoResponse deleteByID(String id){
         Todo todo = todoRepository.findById(id).orElseThrow(TodoIdNotFoundException::new);
         todoRepository.deleteById(id);
-        return new TodoResponse(todo.getId(), todo.getTask(), todo.getDue(), todo.isDone());
+        return toResponse(todo);
 
     }
 }

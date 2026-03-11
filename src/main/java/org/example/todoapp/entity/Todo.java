@@ -1,9 +1,6 @@
 package org.example.todoapp.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
 import java.time.LocalDateTime;
@@ -18,18 +15,27 @@ public class Todo {
     private String task;
     private LocalDateTime due;
     private boolean done;
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
+    private MyUser owner;
 
-    public Todo(String id, String task, LocalDateTime due, boolean done) {
-        this.id = id;
-        this.task = task;
-        this.due = due;
-        this.done = done;
+    public MyUser getOwner() {
+        return owner;
+    }
+
+    public void setOwner(MyUser owner) {
+        this.owner = owner;
     }
 
     public Todo(String task, LocalDateTime due) {
         this.task = task;
         this.due = due;
         this.done = false;
+    }
+
+    public Todo(String task, LocalDateTime due, MyUser owner) {
+        this(task, due);
+        this.owner = owner;
     }
 
     public Todo() {}

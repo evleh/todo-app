@@ -4,8 +4,10 @@ import jakarta.validation.Valid;
 import org.example.todoapp.dto.TodoCreateRequest;
 import org.example.todoapp.dto.TodoResponse;
 import org.example.todoapp.dto.TodoUpdateRequest;
+import org.example.todoapp.security.UserPrincipal;
 import org.example.todoapp.service.TodoService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -50,8 +52,8 @@ public class TodoController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public TodoResponse create(@RequestBody @Valid TodoCreateRequest todo){
-        return this.todoService.create(todo);
+    public TodoResponse create(@RequestBody @Valid TodoCreateRequest todo, @AuthenticationPrincipal UserPrincipal principal){
+        return this.todoService.create(todo, principal);
     }
 
     @PutMapping("/{id}")

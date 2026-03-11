@@ -2,6 +2,9 @@ package org.example.todoapp.entity;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 public class MyUser {
 
@@ -12,6 +15,10 @@ public class MyUser {
     @Enumerated(EnumType.STRING)
     private Role role;
     private String password;
+
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<Todo> todos = new ArrayList<>();
 
     public MyUser() {
         this.role = Role.USER;
