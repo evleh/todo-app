@@ -22,15 +22,14 @@ public class AuthService {
     public TokenResponse createToken(TokenRequest tokenRequest) {
         // Authentication Object
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(tokenRequest.getUsername(), tokenRequest.getPassword())
+                new UsernamePasswordAuthenticationToken(tokenRequest.username(), tokenRequest.password())
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
-        TokenResponse token = new TokenResponse();
-        token.setAccessToken(userPrincipal.getUserId()); // hier jwt token setzen!!!!
+        TokenResponse token = new TokenResponse(userPrincipal.getUserId()); // hier jwt token setzen!!!!
 
         return token;
     }
