@@ -6,6 +6,7 @@ import org.example.todoapp.dto.TodoUpdateRequest;
 import org.example.todoapp.entity.MyUser;
 import org.example.todoapp.entity.Todo;
 import org.example.todoapp.exception.EntityNotFoundException;
+import org.example.todoapp.exception.PermissionDeniedException;
 import org.example.todoapp.exception.TodoIdNotFoundException;
 import org.example.todoapp.repository.TodoRepository;
 import org.example.todoapp.exception.TodoAlreadyExcistsException;
@@ -60,8 +61,13 @@ public class TodoService {
         return toResponse(todo);
     }
 
-    public List<TodoResponse> readAll(){
-        return todoRepository.findAll().stream().map(TodoService::toResponse).toList();
+    public List<TodoResponse> readAll(UserPrincipal principal){
+        if(principal.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))){
+            return todoRepository.findAll().stream().map(TodoService::toResponse).toList();
+        }
+
+        MyUser owner = userRepository.findById(principal.getUserId()).orElseThrow(EntityNotFoundException::new);
+        return todoRepository.findByOwner(owner).stream().map(TodoService::toResponse).toList();
     }
 
     public TodoResponse deleteByID(String id){

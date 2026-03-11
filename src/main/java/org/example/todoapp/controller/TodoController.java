@@ -41,9 +41,9 @@ public class TodoController {
     }
 
 
-    @GetMapping
-    public List<TodoResponse> readAll(){
-        return this.todoService.readAll();
+    @GetMapping // requires resource-level authorization i.e role-based authorization would be redundant
+    public List<TodoResponse> readAll(@AuthenticationPrincipal UserPrincipal principal){
+        return this.todoService.readAll(principal);
     }
 
     @GetMapping("/{id}")
