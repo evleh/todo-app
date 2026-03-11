@@ -29,17 +29,16 @@ public class UserController {
         return userService.readAll();
     }
 
-    @GetMapping
-    @RequestMapping("/{id}")
+    @GetMapping("/{id}")
     public UserResponse read(@PathVariable String id){
         return userService.read(id);
     }
 
-    @PutMapping
-    @RequestMapping("/{id}")
+    @PutMapping("/{id}")
     public UserResponse update(@PathVariable String id, @RequestBody @Valid UserUpdateRequest request){
         return userService.update(id, request);
     }
+
     @DeleteMapping("/{id}")
     public UserResponse delete(@PathVariable String id){
         return userService.delete(id);
