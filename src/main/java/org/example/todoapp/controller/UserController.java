@@ -1,10 +1,9 @@
 package org.example.todoapp.controller;
 
 import jakarta.validation.Valid;
-import org.example.todoapp.dto.Registration;
-import org.example.todoapp.entity.MyUser;
 import org.example.todoapp.dto.UserCreateRequest;
 import org.example.todoapp.dto.UserResponse;
+import org.example.todoapp.dto.UserUpdateRequest;
 import org.example.todoapp.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
