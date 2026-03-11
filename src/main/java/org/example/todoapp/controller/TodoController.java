@@ -7,6 +7,7 @@ import org.example.todoapp.dto.TodoUpdateRequest;
 import org.example.todoapp.security.UserPrincipal;
 import org.example.todoapp.service.TodoService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
