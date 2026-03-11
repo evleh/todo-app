@@ -1,6 +1,6 @@
 package org.example.todoapp.service;
 
-import org.example.todoapp.dto.Token;
+import org.example.todoapp.dto.TokenResponse;
 import org.example.todoapp.dto.TokenRequest;
 import org.example.todoapp.security.UserPrincipal;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,7 +19,7 @@ public class AuthService {
         this.authenticationManager = authenticationManager;
     }
 
-    public Token createToken(TokenRequest tokenRequest) {
+    public TokenResponse createToken(TokenRequest tokenRequest) {
         // Authentication Object
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(tokenRequest.getUsername(), tokenRequest.getPassword())
@@ -29,7 +29,7 @@ public class AuthService {
 
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
-        Token token = new Token();
+        TokenResponse token = new TokenResponse();
         token.setAccessToken(userPrincipal.getUserId()); // hier jwt token setzen!!!!
 
         return token;

@@ -1,6 +1,6 @@
 package org.example.todoapp.dto;
 
-public class Token {
+public class TokenResponse {
 
     private String accessToken;
 

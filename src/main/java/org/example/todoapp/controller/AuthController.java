@@ -2,10 +2,9 @@ package org.example.todoapp.controller;
 
 import jakarta.validation.Valid;
 
-import org.example.todoapp.dto.Token;
+import org.example.todoapp.dto.TokenResponse;
 import org.example.todoapp.dto.TokenRequest;
 import org.example.todoapp.service.AuthService;
-import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +19,7 @@ public class AuthController {
     public AuthController(AuthService authService) { this.authService = authService;}
 
     @PostMapping("/token")
-    public Token token(@RequestBody @Valid TokenRequest tokenRequest) {
+    public TokenResponse token(@RequestBody @Valid TokenRequest tokenRequest) {
         return authService.createToken(tokenRequest);
     }
 }
