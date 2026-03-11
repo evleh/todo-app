@@ -3,6 +3,8 @@ package org.example.todoapp.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 import java.util.UUID;
@@ -11,17 +13,14 @@ import java.util.UUID;
 public class MyUser {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
-
     private String username;
-
+    private String role;
     @JsonIgnore
     private String password;
 
-    private String role;
-
     public MyUser() {
-        this.id = UUID.randomUUID().toString();
         this.role = "ROLE_USER";
     }
 
@@ -29,9 +28,6 @@ public class MyUser {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public String getUsername() {
         return username;

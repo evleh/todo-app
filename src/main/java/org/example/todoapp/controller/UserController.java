@@ -3,11 +3,12 @@ package org.example.todoapp.controller;
 import jakarta.validation.Valid;
 import org.example.todoapp.dto.Registration;
 import org.example.todoapp.entity.MyUser;
+import org.example.todoapp.dto.UserCreateRequest;
+import org.example.todoapp.dto.UserResponse;
 import org.example.todoapp.service.UserService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -20,7 +21,24 @@ public class UserController {
     }
 
     @PostMapping
-    public MyUser create(@RequestBody @Valid Registration registration) {
-        return userService.register(registration);
+    public UserResponse create(@RequestBody @Valid UserCreateRequest registration) {
+        return userService.create(registration);
+    }
+
+    @GetMapping
+    public List<UserResponse> readAll(){
+        return userService.readAll();
+    }
+
+    @GetMapping
+    @RequestMapping("/{id}")
+    public UserResponse read(@PathVariable String id){
+        return userService.read(id);
+    }
+
+    @PutMapping
+    @RequestMapping("/{id}")
+    public UserResponse update(@PathVariable String id, @RequestBody @Valid UserUpdateRequest request){
+        return userService.update(id, request);
     }
 }

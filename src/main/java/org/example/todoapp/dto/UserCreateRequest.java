@@ -2,7 +2,7 @@ package org.example.todoapp.dto;
 
 import jakarta.validation.constraints.NotBlank;
 
-public class Registration {
+public class UserCreateRequest {
 
     @NotBlank
     private String username;
