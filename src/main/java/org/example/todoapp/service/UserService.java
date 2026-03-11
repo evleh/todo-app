@@ -1,5 +1,6 @@
 package org.example.todoapp.service;
 
+import org.example.todoapp.dto.UserCreateRequest;
 import org.example.todoapp.dto.UserResponse;
 import org.example.todoapp.dto.UserUpdateRequest;
 import org.example.todoapp.exception.EntityAlreadyExistsException;
@@ -27,7 +28,7 @@ public class UserService {
     }
 
     public List<UserResponse> readAll(){
-        return userRepository.findAll().stream().map(myUser -> toResponse(myUser)).toList();
+        return userRepository.findAll().stream().map(UserService::toResponse).toList();
     }
 
     public UserResponse create(UserCreateRequest registration) {

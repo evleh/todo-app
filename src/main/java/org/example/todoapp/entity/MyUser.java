@@ -1,13 +1,6 @@
 package org.example.todoapp.entity;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-
-import java.util.UUID;
+import jakarta.persistence.*;
 
 @Entity
 public class MyUser {
@@ -16,12 +9,12 @@ public class MyUser {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private String username;
-    private String role;
-    @JsonIgnore
+    @Enumerated(EnumType.STRING)
+    private Role role;
     private String password;
 
     public MyUser() {
-        this.role = "ROLE_USER";
+        this.role = Role.USER;
     }
 
     public String getId() {
@@ -45,11 +38,11 @@ public class MyUser {
         this.password = password;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 }

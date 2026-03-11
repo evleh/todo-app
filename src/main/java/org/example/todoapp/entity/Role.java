@@ -1,8 +1,14 @@
 package org.example.todoapp.entity;
 
-import org.hibernate.metamodel.internal.AbstractDynamicMapInstantiator;
-
 public enum Role {
     USER,
-    ADMIN
+    ADMIN;
+
+    /**
+     * Method converts Enum to a String that works together with Spring security "hasRole"-method
+     * @return User role in String-format.
+     */
+    public String toGrantedAuthority() {
+        return "ROLE_" + this.name();
+    }
 }
