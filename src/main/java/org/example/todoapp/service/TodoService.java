@@ -34,8 +34,18 @@ public class TodoService {
         return new TodoResponse(todo.getId(), todo.getTask(), todo.getDue(), todo.isDone(), ownerId);
     }
 
-    public TodoResponse update(String id, TodoUpdateRequest request){
+    private void assertOwnerOrAdmin(Todo todo, UserPrincipal principal){
+        boolean isAdmin = principal.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+        MyUser owner = todo.getOwner();
+        boolean isOwner = owner != null && owner.getId().equals(principal.getUserId());
+        if(!isAdmin && !isOwner) throw new PermissionDeniedException();
+    }
+
+    public TodoResponse update(String id, TodoUpdateRequest request, UserPrincipal principal){
         Todo todo = todoRepository.findById(id).orElseThrow(TodoIdNotFoundException::new);
+
+        assertOwnerOrAdmin(todo, principal);
+
         todo.setDone(request.done());
         todo.setDue(request.due());
         todo.setTask(request.task());
@@ -44,7 +54,7 @@ public class TodoService {
     }
 
 
-    public TodoResponse create (TodoCreateRequest todo, UserPrincipal principal){
+    public TodoResponse create(TodoCreateRequest todo, UserPrincipal principal){
         MyUser creator = userRepository.findById(principal.getUserId()).orElseThrow(EntityNotFoundException::new);
 
         Optional<Todo> todoCheck = todoRepository.findByTask(todo.task());
@@ -70,10 +80,10 @@ public class TodoService {
         return todoRepository.findByOwner(owner).stream().map(TodoService::toResponse).toList();
     }
 
-    public TodoResponse deleteByID(String id){
+    public TodoResponse deleteByID(String id, UserPrincipal principal){
         Todo todo = todoRepository.findById(id).orElseThrow(TodoIdNotFoundException::new);
+        assertOwnerOrAdmin(todo, principal);
         todoRepository.deleteById(id);
         return toResponse(todo);
-
     }
 }

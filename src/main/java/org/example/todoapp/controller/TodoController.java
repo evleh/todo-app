@@ -7,7 +7,7 @@ import org.example.todoapp.dto.TodoUpdateRequest;
 import org.example.todoapp.security.UserPrincipal;
 import org.example.todoapp.service.TodoService;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,6 +47,7 @@ public class TodoController {
     }
 
     @GetMapping("/{id}")
+    @PostAuthorize("hasRole('ADMIN') || returnObject.ownerId().equals(authentication.principal.userId)")
     public TodoResponse read(@PathVariable String id){
        return this.todoService.read(id);
     }
@@ -58,13 +59,13 @@ public class TodoController {
     }
 
     @PutMapping("/{id}")
-    public TodoResponse update(@PathVariable String id, @RequestBody @Valid TodoUpdateRequest request){
-        return this.todoService.update(id, request);
+    public TodoResponse update(@PathVariable String id, @RequestBody @Valid TodoUpdateRequest request, @AuthenticationPrincipal UserPrincipal principal){
+        return this.todoService.update(id, request, principal);
     }
 
     @DeleteMapping("/{id}")
-    public TodoResponse delete(@PathVariable String id){
-        return this.todoService.deleteByID(id);
+    public TodoResponse delete(@PathVariable String id, @AuthenticationPrincipal UserPrincipal principal){
+        return this.todoService.deleteByID(id, principal);
     }
 
 }
