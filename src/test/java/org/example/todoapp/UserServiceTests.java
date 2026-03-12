@@ -2,6 +2,7 @@ package org.example.todoapp;
 
 import org.example.todoapp.dto.UserCreateRequest;
 import org.example.todoapp.dto.UserResponse;
+import org.example.todoapp.dto.UserUpdateRequest;
 import org.example.todoapp.entity.MyUser;
 import org.example.todoapp.entity.Role;
 import org.example.todoapp.exception.EntityAlreadyExistsException;
@@ -105,6 +106,9 @@ public class UserServiceTests {
 
             // assert
             assertEquals(request.username(), response.username());
+            verify(userRepository).save(any());
+            verify(passwordEncoder).encode("password");
+
         }
 
         @Test
@@ -145,6 +149,38 @@ public class UserServiceTests {
             assertEquals(response.id(), user.getId());
             verify(userRepository).delete(any());
         }
+    }
 
+    @Nested
+    class UpdateTests{
+        @Test
+        void shouldThrowWhenUserNotFoundInUpdate(){
+            // arrange
+            String id = "some_UUID";
+            UserUpdateRequest request = new UserUpdateRequest("username", Role.USER);
+            when(userRepository.findById(id)).thenReturn(Optional.empty());
+
+            // act & assert
+            assertThrows(EntityNotFoundException.class, () -> userService.update(id, request));
+        }
+
+        @Test
+        void shouldUpdateUserIfFound(){
+            // arrange
+            String id = "some_UUID";
+            UserUpdateRequest request = new UserUpdateRequest("username", Role.USER);
+            MyUser updatedUser = new MyUser();
+            updatedUser.setUsername(request.username());
+            ReflectionTestUtils.setField(updatedUser, "id", id);
+            when(userRepository.findById(id)).thenReturn(Optional.of(updatedUser));
+            when(userRepository.save(any())).thenReturn(updatedUser);
+
+            // act
+            UserResponse response = userService.update(id, request);
+
+            // assert
+            assertEquals(request.username(), response.username());
+            verify(userRepository).save(any());
+        }
     }
 }
