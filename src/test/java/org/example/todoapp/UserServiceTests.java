@@ -12,7 +12,6 @@ import org.example.todoapp.service.UserService;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -99,8 +98,9 @@ public class UserServiceTests {
             when(userRepository.findByUsername(request.username())).thenReturn(Optional.empty());
             when(passwordEncoder.encode("password")).thenReturn("hashed_password");
             MyUser savedUser = new MyUser();
+            ReflectionTestUtils.setField(savedUser, "id", "some-uuid");
             savedUser.setUsername(request.username());
-            when(userRepository.save(ArgumentMatchers.any(MyUser.class))).thenReturn(savedUser);
+            when(userRepository.save(any())).thenReturn(savedUser);
             // act
             UserResponse response = userService.create(request);
 
@@ -180,6 +180,7 @@ public class UserServiceTests {
 
             // assert
             assertEquals(request.username(), response.username());
+            assertEquals(request.role().name(), response.role());
             verify(userRepository).save(any());
         }
     }
