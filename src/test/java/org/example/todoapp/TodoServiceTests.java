@@ -128,10 +128,11 @@ public class TodoServiceTests {
         @Test
         void shouldThrowWhenPrincipalIsNotInDB(){
             // arrange
-            when(userRepository.findById("wrongUUID")).thenReturn(Optional.empty());
+            UserPrincipal userPrincipal = regularUserPrincipal();
+            when(userRepository.findById(userPrincipal.getUserId())).thenReturn(Optional.empty());
 
             // act & assert
-            assertThrows(EntityNotFoundException.class, () -> todoService.readAll(regularUserPrincipal()));
+            assertThrows(EntityNotFoundException.class, () -> todoService.readAll(userPrincipal));
         }
 
 
