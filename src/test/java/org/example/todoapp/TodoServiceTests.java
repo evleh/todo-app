@@ -1,6 +1,5 @@
 package org.example.todoapp;
 
-import org.apache.catalina.User;
 import org.example.todoapp.dto.TodoResponse;
 import org.example.todoapp.entity.MyUser;
 import org.example.todoapp.entity.Role;
@@ -10,7 +9,6 @@ import org.example.todoapp.repository.TodoRepository;
 import org.example.todoapp.repository.UserRepository;
 import org.example.todoapp.security.UserPrincipal;
 import org.example.todoapp.service.TodoService;
-import org.hibernate.grammars.hql.HqlParser;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,7 +23,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -52,10 +53,13 @@ public class TodoServiceTests {
         UserPrincipal ownerPrincipal = regularUserPrincipal();
         MyUser owner = new MyUser();
         owner.setUsername(ownerPrincipal.getUsername());
+
+        // see docs/decisions/001-jpa-entity-id-testing-strategy.md
         ReflectionTestUtils.setField(owner, "id", ownerPrincipal.getUserId());
 
-        Todo todo = new Todo("test TodService", LocalDateTime.now(), owner);
-        ReflectionTestUtils.setField(todo, "id", "someTodoUUID");
+        Todo todo = new Todo("test TodoService", LocalDateTime.now(), owner);
+        // see docs/decisions/001-jpa-entity-id-testing-strategy.md
+        ReflectionTestUtils.setField(todo, "id", "someTodoUUID1");
 
         return todo;
     }
@@ -64,10 +68,12 @@ public class TodoServiceTests {
         UserPrincipal ownerPrincipal = adminUserPrincipal();
         MyUser owner = new MyUser();
         owner.setUsername(ownerPrincipal.getUsername());
+        // see docs/decisions/001-jpa-entity-id-testing-strategy.md
         ReflectionTestUtils.setField(owner, "id", ownerPrincipal.getUserId());
 
-        Todo todo = new Todo("test TodService", LocalDateTime.now(), owner);
-        ReflectionTestUtils.setField(todo, "id", "someTodoUUID");
+        Todo todo = new Todo("test TodoService", LocalDateTime.now(), owner);
+        // see docs/decisions/001-jpa-entity-id-testing-strategy.md
+        ReflectionTestUtils.setField(todo, "id", "someTodoUUID2");
 
         return todo;
     }
@@ -95,7 +101,9 @@ public class TodoServiceTests {
             assertEquals(todoOfUser.getId(), response.getFirst().id());
             assertEquals(todoOfUser.getOwner().getId(), response.getFirst().ownerId());
             assertEquals(todoOfUser.getDue(), response.getFirst().due());
+
             assertEquals(2, response.size());
+            assertEquals(todoOfAdmin.getId(), response.get(1).id());
         }
 
         @Test
@@ -111,13 +119,13 @@ public class TodoServiceTests {
             todos.add(todoOfUser);
 
             when(userRepository.findById(userPrincipal.getUserId())).thenReturn(Optional.of(user));
-            when(todoRepository.findByOwner(user)).thenReturn(todos);
+            when(todoRepository.findByOwner(any(MyUser.class))).thenReturn(todos);
 
             // act
             List<TodoResponse> response = todoService.readAll(userPrincipal);
-            System.out.println(response);
 
             // assert
+            verify(todoRepository).findByOwner(user);
             assertEquals(todoOfUser.getTask(), response.getFirst().task());
             assertEquals(todoOfUser.getId(), response.getFirst().id());
             assertEquals(todoOfUser.getOwner().getId(), response.getFirst().ownerId());
