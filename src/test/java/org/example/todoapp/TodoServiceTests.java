@@ -20,11 +20,11 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -141,6 +141,38 @@ public class TodoServiceTests {
 
             // act & assert
             assertThrows(EntityNotFoundException.class, () -> todoService.readAll(userPrincipal));
+        }
+
+        @Test
+        void shouldReturnEmptyListWhenUserHasNoTodos() {
+            // arrange
+            UserPrincipal userPrincipal = regularUserPrincipal();
+            MyUser user = new MyUser();
+            user.setUsername(userPrincipal.getUsername());
+            ReflectionTestUtils.setField(user, "id", userPrincipal.getUserId());
+
+            when(userRepository.findById(userPrincipal.getUserId())).thenReturn(Optional.of(user));
+            when(todoRepository.findByOwner(any(MyUser.class))).thenReturn(Collections.emptyList());
+
+            // act
+            List<TodoResponse> response = todoService.readAll(userPrincipal);
+
+            // assert
+            verify(todoRepository).findByOwner(user);
+            assertTrue(response.isEmpty());
+        }
+
+        @Test
+        void shouldReturnEmptyListWhenAdminAndNoTodosExist() {
+            // arrange
+            UserPrincipal admin = adminUserPrincipal();
+            when(todoRepository.findAll()).thenReturn(Collections.emptyList());
+
+            // act
+            List<TodoResponse> response = todoService.readAll(admin);
+
+            // assert
+            assertTrue(response.isEmpty());
         }
 
 
