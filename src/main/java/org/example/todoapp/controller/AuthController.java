@@ -19,7 +19,7 @@ public class AuthController {
     public AuthController(AuthService authService) { this.authService = authService;}
 
     @PostMapping("/token")
-    public TokenResponse token(@RequestBody @Valid TokenRequest tokenRequest) {
+    public TokenResponse login(@RequestBody @Valid TokenRequest tokenRequest) {
         return authService.createToken(tokenRequest);
     }
 }

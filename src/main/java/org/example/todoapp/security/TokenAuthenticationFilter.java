@@ -1,44 +1,47 @@
 package org.example.todoapp.security;
 
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.List;
 
 @Component
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain ) throws ServletException, IOException {
-        System.out.println("Check Token here!");
-        System.out.println(request.getHeader("Authorization"));
+    private final JwtService jwtService;
 
-        // check JWT, if valid read user data and create authentication
+    public TokenAuthenticationFilter(JwtService jwtService) {
+        this.jwtService = jwtService;
+    }
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+
         final String authHeader = request.getHeader("Authorization");
-        final String userId; // das ist JWT
-        final String userName;
-        if (null == authHeader) { // nächter Filter in chain aufrufen wenn header null ist
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // extrahieren von token
-        userId = authHeader.replace("Bearer ", "");
-        //userName =
-        // existiert User in der DB?
-        Authentication authentication = new UserPrincipalAuthenticationToken(
-                new UserPrincipal(userId, "testuser", "", List.of(new SimpleGrantedAuthority("ROLE_USER")))
-        );
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        final String token = authHeader.substring(7);
 
+        try {
+            UserPrincipal userPrincipal = jwtService.parseToken(token);
+            SecurityContextHolder.getContext().setAuthentication(
+                    new UserPrincipalAuthenticationToken(userPrincipal)
+            );
+        } catch (JwtException e) {
+            // Invalid or expired token — do not set authentication.
+            // Spring Security will reject the request as 401 at the authorization step.
+        }
 
         filterChain.doFilter(request, response);
     }
