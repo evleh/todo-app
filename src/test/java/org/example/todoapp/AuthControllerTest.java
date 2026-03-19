@@ -80,20 +80,41 @@ class AuthControllerTest {
         }
 
         @Test
-        void wrongPassword_returns401() throws Exception {
-            // TODO
+        void wrongPassword_returns403() throws Exception {
+            // arrange
+            TokenRequest request = new TokenRequest(USERNAME, "test-wrong-password");
+
+            // act & assert
+            mockMvc.perform(post("/auth/token")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request)))
+                    .andExpect(status().isForbidden());
         }
 
         @Test
-        void unknownUsername_returns401() throws Exception {
-            // TODO
+        void unknownUsername_returns403() throws Exception {
+            // arrange
+            TokenRequest request = new TokenRequest("test-wrong-username", PASSWORD);
+
+            // act & assert
+            mockMvc.perform(post("/auth/token")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(request)))
+                    .andExpect(status().isForbidden());
         }
 
         // [JUNIOR] Hint: send {"username": "", "password": ""} and expect 400.
         // This exercises @NotBlank on TokenRequest — validation fires before the method runs.
         @Test
         void blankFields_returns400() throws Exception {
-            // TODO
+            // arrange
+            TokenRequest request = new TokenRequest("", "");
+
+            // act & assert
+            mockMvc.perform(post("/auth/token")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(request)))
+                    .andExpect(status().isBadRequest());
         }
     }
 
