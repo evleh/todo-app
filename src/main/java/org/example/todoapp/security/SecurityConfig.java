@@ -31,15 +31,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http.addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-        //CORS: cross origin ressource sharing. back und frontend  sollen miteinander ressourcen teilen, per devault darf man das nicht.
+        // CORS: disabled — frontend and backend are served from the same origin in this project.
         http.cors(AbstractHttpConfigurer::disable);
-        //CSRF: requests abssenden über javascript versteckt über andere seite. seite nimmt aus browser meine daten die im browser gespeichert sind und verwendete sie unabhängig von dem was ich mag
+        // CSRF: disabled — not needed for stateless JWT auth (no session cookies to exploit).
         http.csrf(AbstractHttpConfigurer::disable);
-        // state management: sessionmanagment ist stateless i.e. uns interessiert nur der aktuelle request
+        // Stateless session: each request is authenticated independently via the JWT — no server-side session.
         http.sessionManagement(conf -> conf.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        http.formLogin(AbstractHttpConfigurer::disable); // um login dialog der per default da ist weg zu bekommen
-        // man darf sich registrieren und login machen , alle anderen anfragen müssen authorisiert sein
-        // swagger ui muss man auch hinzufügen sonst sieht man gar nichts mehr
+        http.formLogin(AbstractHttpConfigurer::disable);
+        // Public routes: registration, login, and API docs. Everything else requires a valid JWT.
         http.authorizeHttpRequests(
                 registry -> registry
                         .requestMatchers(HttpMethod.POST, "/users").permitAll()
