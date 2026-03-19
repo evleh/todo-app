@@ -82,8 +82,6 @@ Controller  →  Service  →  Repository
 ```
 
 ## Known Limitations AKA What's next. 
-
-- **Password update not implemented** — the `PUT /users/{id}` endpoint updates username and role but not password.
-- **Update of role is unsafe** — `PUT /users/{id}` endpoints allows regular users to change themselves to be admin users. 
+ 
 - **Schema is recreated on every restart** — `ddl-auto=create` is set for development convenience; this would need to change before any production use.
 - **Unfinished TodoService unit-tests** — Currently only the `readAll()` method has unit tests.  
