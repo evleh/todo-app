@@ -5,9 +5,8 @@
         "matcher": "Bash",
         "hooks": [
           {
-            "type": "command",
-            "command": "bash -c 'INPUT=$(cat); CMD=$(python3 -c \"import sys,json; d=json.loads(sys.argv[1]); print(d.get(\\\"tool_input\\\",{}).get(\\\"command\\\",\\\"\\\"))\" \"$INPUT\"); if echo \"$CMD\" | grep -qE \"git commit\"; then MSG=$(git log -1 --pretty=%B 2>/dev/null); if [ -n \"$MSG\" ]; then python3 -c \"import sys,json; msg=sys.argv[1]; print(json.dumps({\\\"hookSpecificOutput\\\": {\\\"hookEventName\\\": \\\"PostToolUse\\\", \\\"additionalContext\\\": \\\"The user just made a git commit. The commit message is:\\\\n\\\\n\\\" + msg + \\\"\\\\n\\\\nPlease give feedback on this commit message to help improve their commit message writing skills. Consider: clarity, use of imperative mood, appropriate length, whether it explains the why not just the what, and other best practices.\\\"}}})\" \"$MSG\"; fi; fi'",
-            "statusMessage": "Reviewing commit message..."
+            "type": "prompt",
+            "prompt": "Check if the Bash tool just executed a git commit command. If so, run 'git log -1 --pretty=%B' to get the latest commit message and give feedback on it: clarity, imperative mood, appropriate length, and whether it explains *why* not just *what*."
           }
         ]
       }
