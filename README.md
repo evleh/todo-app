@@ -83,5 +83,4 @@ Controller  →  Service  →  Repository
 
 ## Known Limitations AKA What's next. 
  
-- **Schema is recreated on every restart** — `ddl-auto=create` is set for development convenience; this would need to change before any production use.
-- **Unfinished TodoService unit-tests** — Currently only the `readAll()` method has unit tests.  
+- **Schema is recreated on every restart** — `ddl-auto=create` is set for development convenience; this would need to change before any production use. 
