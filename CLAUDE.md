@@ -87,3 +87,4 @@ Spring Boot 3 / Java 21 REST API with a 3-layer architecture:
 - Integration tests for the auth flow (`AuthControllerTest`) 
 
 
+
