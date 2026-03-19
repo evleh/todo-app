@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -126,19 +127,41 @@ class AuthControllerTest {
         // Spring falls back to Http403ForbiddenEntryPoint. Expect 403, not 401.
         @Test
         void noToken_returns403OnProtectedEndpoint() throws Exception {
-            // TODO
+            // act & assert
+            mockMvc.perform(get("/users"))
+                        .andExpect(status().isForbidden());
         }
 
         @Test
         void validToken_grantsAccessToProtectedEndpoint() throws Exception {
-            // TODO
+            // arrange: perform login and extract token
+            TokenRequest loginRequest = new TokenRequest(USERNAME, PASSWORD);
+
+            String responseJson = mockMvc.perform(post("/auth/token")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(loginRequest)))
+                    .andExpect(status().isOk())
+                    .andReturn()
+                    .getResponse()
+                    .getContentAsString();
+
+            String token = objectMapper.readTree(responseJson)
+                    .get("accessToken")
+                    .asText();
+
+            // act and assert
+            mockMvc.perform(get("/users")
+                            .header("Authorization", "Bearer " + token))
+                    .andExpect(status().isOk());
         }
 
         // [MID] Hint: pass "Bearer this.is.not.a.valid.jwt" — the filter catches the
         // parse exception, skips authentication, and the result is the same as no token.
         @Test
         void tamperedToken_returns403OnProtectedEndpoint() throws Exception {
-            // TODO
+            // act & assert
+            mockMvc.perform(get("/users").header("Authorization", "Bearer this.is.not.a.valid.jwt"))
+                    .andExpect(status().isForbidden());
         }
     }
 }
