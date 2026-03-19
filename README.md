@@ -57,7 +57,7 @@ Swagger UI: http://localhost:8080/swagger.html
 
 **Auth flow:**
 1. Register via `POST /users`
-2. Login via `POST /auth/token` with `{ "username": "...", "password": "..." }` — receive an `accessToken`
+2. Login via `POST /auth/token` with `{ "username": "...", "password": "..." }` — receive an `accessToken` (JWT)
 3. Pass the token in subsequent requests: `Authorization: Bearer <accessToken>`
 
 ## Architecture
@@ -83,7 +83,6 @@ Controller  →  Service  →  Repository
 
 ## Known Limitations AKA What's next. 
 
-- **Token is not a JWT** — the current access token is the user's raw UUID. JWT implementation is planned.
 - **Password update not implemented** — the `PUT /users/{id}` endpoint updates username and role but not password.
 - **Update of role is unsafe** — `PUT /users/{id}` endpoints allows regular users to change themselves to be admin users. 
 - **Schema is recreated on every restart** — `ddl-auto=create` is set for development convenience; this would need to change before any production use.

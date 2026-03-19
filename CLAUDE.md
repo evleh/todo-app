@@ -84,6 +84,6 @@ Spring Boot 3 / Java 21 REST API with a 3-layer architecture:
 **Tests** (`src/test/`):
 - `TodoServiceTests` — unit tests using Mockito. Covers `readAll` with role-based and ownership logic.
 - `UserServiceTests` — unit tests using Mockito. Covers create, read, readAll, update, delete.
-- Integration tests for the auth flow (`AuthControllerTest`) — in progress.
+- Integration tests for the auth flow (`AuthControllerTest`) 
 
 
