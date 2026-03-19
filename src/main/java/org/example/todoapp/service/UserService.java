@@ -48,10 +48,9 @@ public class UserService {
     }
 
     public UserResponse update(String id, UserUpdateRequest request){
-        // todo implement save update of password.
         MyUser existing = userRepository.findById(id).orElseThrow(EntityNotFoundException::new);
         existing.setUsername(request.username());
-        existing.setRole(request.role());
+        existing.setPassword(passwordEncoder.encode(request.password()));
 
         return toResponse(userRepository.save(existing));
     }

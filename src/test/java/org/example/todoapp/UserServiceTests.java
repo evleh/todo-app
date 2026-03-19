@@ -4,7 +4,6 @@ import org.example.todoapp.dto.UserCreateRequest;
 import org.example.todoapp.dto.UserResponse;
 import org.example.todoapp.dto.UserUpdateRequest;
 import org.example.todoapp.entity.MyUser;
-import org.example.todoapp.entity.Role;
 import org.example.todoapp.exception.EntityAlreadyExistsException;
 import org.example.todoapp.exception.EntityNotFoundException;
 import org.example.todoapp.repository.UserRepository;
@@ -161,7 +160,7 @@ public class UserServiceTests {
         void shouldThrowWhenUserNotFoundInUpdate(){
             // arrange
             String id = "some_UUID";
-            UserUpdateRequest request = new UserUpdateRequest("username", Role.USER);
+            UserUpdateRequest request = new UserUpdateRequest("username", "password");
             when(userRepository.findById(id)).thenReturn(Optional.empty());
 
             // act & assert
@@ -172,12 +171,13 @@ public class UserServiceTests {
         void shouldUpdateUserIfFound(){
             // arrange
             String id = "some_UUID";
-            UserUpdateRequest request = new UserUpdateRequest("username", Role.USER);
+            UserUpdateRequest request = new UserUpdateRequest("username", "new-password");
             MyUser updatedUser = new MyUser();
             updatedUser.setUsername(request.username());
             // see docs/decisions/001-jpa-entity-id-testing-strategy.md
             ReflectionTestUtils.setField(updatedUser, "id", id);
             when(userRepository.findById(id)).thenReturn(Optional.of(updatedUser));
+            when(passwordEncoder.encode(request.password())).thenReturn("hashed_password");
             when(userRepository.save(any())).thenReturn(updatedUser);
 
             // act
@@ -185,8 +185,8 @@ public class UserServiceTests {
 
             // assert
             assertEquals(request.username(), response.username());
-            assertEquals(request.role().name(), response.role());
             verify(userRepository).save(any());
+            verify(passwordEncoder).encode(request.password());
         }
     }
 }
