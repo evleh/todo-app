@@ -7,3 +7,5 @@ services:
       - POSTGRES_USER=eww
       - POSTGRES_PASSWORD=eww
       - POSTGRES_DB=todoapp
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
