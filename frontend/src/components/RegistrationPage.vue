@@ -22,26 +22,26 @@ import Button from 'primevue/button';
 import Message from 'primevue/message';
 import { zodResolver } from '@primevue/forms/resolvers/zod';
 import { useToast } from "primevue/usetoast";
-import {UserService} from "../../services/UserService.ts";
+import {UserService} from "../services/UserService.ts";
 import { z } from 'zod';
 
 const toast = useToast();
 const initialValues = ref({
   username: '',
-  email: ''
+  password: ''
 });
 
-const resolver = ref(zodResolver(
+const resolver = zodResolver(
     z.object({
       username: z.string().min(1, { message: 'Username is required.' }),
       password: z.string().min(1, { message: 'Password is required.' })
     })
-));
+);
 
 const onFormSubmit = async ({ valid, values }) => {
   if (valid) {
     try {
-      await UserService.createUser(values.username, values.password);
+      await UserService.createUser({username: values.username, password: values.password});
       toast.add({ severity: 'success', summary: 'Registration was successful.', life: 3000 });
     } catch (e) {
       toast.add({ severity: 'error', summary: 'Registration was not successful.', life: 3000 });
