@@ -14,6 +14,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 // Definition of @Configuration with a SecurityFilterChain switches off the default webapp security settings in Spring Boot.
 @Configuration
@@ -31,8 +34,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http.addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-        // CORS: disabled — frontend and backend are served from the same origin in this project.
-        http.cors(AbstractHttpConfigurer::disable);
+        // CORS: allow requests from the Vite dev server during development.
+        http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
         // CSRF: disabled — not needed for stateless JWT auth (no session cookies to exploit).
         http.csrf(AbstractHttpConfigurer::disable);
         // Stateless session: each request is authenticated independently via the JWT — no server-side session.
@@ -52,6 +55,18 @@ public class SecurityConfig {
         return http.build();
 
     }
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.addAllowedOrigin("http://localhost:5173");
+        config.addAllowedMethod("*");
+        config.addAllowedHeader("*");
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
