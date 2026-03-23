@@ -15,6 +15,10 @@
   --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
 
+  --card-bg: none;
+  --card-border: none;
+
+
   font: 18px/145% var(--sans);
   letter-spacing: 0.18px;
   color-scheme: light dark;
@@ -296,3 +300,11 @@ code {
 }
 
 @import "tailwindcss";
+
+.card {
+    background: var(--card-bg);
+    border: var(--card-border);
+    padding: 2rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+}
