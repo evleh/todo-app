@@ -1,11 +1,12 @@
 # Todo App
 
-A RESTful backend API for managing todos, built with Spring Boot 3 and Java 21. 
-Started as example code from a backend development course and extended independently to practice and refine backend fundamentals — including layered architecture, database persistence, authentication, and authorization. 
+A full-stack todo application with a Spring Boot 3 / Java 21 REST API backend and a Vue 3 frontend.
+Started as example code from a backend development course and extended independently to practice and refine full-stack fundamentals — including layered architecture, database persistence, authentication, authorization, and frontend-backend integration.
 New features are written independently first, then reviewed by claude-code and refined iteratively.
 
 ## Tech Stack
 
+### Backend
 - **Java 21** / **Spring Boot 3**
 - **Spring Security** — authentication and role-based / resource-level authorization
 - **Spring Data JPA** / **Hibernate** — ORM and database access
@@ -14,6 +15,15 @@ New features are written independently first, then reviewed by claude-code and r
 - **JUnit 5** / **Mockito** — unit testing
 - **Springdoc OpenAPI** — API documentation via Swagger UI
 
+### Frontend
+- **Vue 3** — component-based UI framework (Composition API, `<script setup>`)
+- **TypeScript** — static typing
+- **Vite** — build tool and dev server
+- **PrimeVue** — UI component library (Aura theme)
+- **Tailwind CSS** — utility-first CSS framework
+- **Axios** — HTTP client for API calls
+- **Zod** — schema validation for forms
+
 ## Getting Started
 
 **1. Start the database**
@@ -21,12 +31,20 @@ New features are written independently first, then reviewed by claude-code and r
 docker compose up
 ```
 
-**2. Run the application**
+**2. Run the backend**
 ```bash
+cd backend
 ./mvnw spring-boot:run
 ```
 
-**3. Explore the API**
+**3. Run the frontend**
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+**4. Explore the API**
 
 Swagger UI: http://localhost:8080/swagger.html
 
@@ -81,6 +99,7 @@ Controller  →  Service  →  Repository
 ./mvnw test
 ```
 
-## Known Limitations AKA What's next. 
- 
-- **Schema is recreated on every restart** — `ddl-auto=create` is set for development convenience; this would need to change before any production use. 
+## Known Limitations / What's next
+
+- **Schema is recreated on every restart** — `ddl-auto=create` is set for development convenience; this would need to change before any production use.
+- **Frontend is registration-only** — login, todo management, and routing are not yet implemented.

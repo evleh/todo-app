@@ -47,6 +47,35 @@ docker compose up
 **Swagger UI:** http://localhost:8080/swagger.html
 **OpenAPI JSON:** http://localhost:8080/api
 
+**Install frontend dependencies:**
+```bash
+cd frontend && npm install
+```
+
+**Start the frontend dev server:**
+```bash
+cd frontend && npm run dev
+```
+
+**Frontend runs at:** http://localhost:5173 (default Vite port)
+
+## Frontend Architecture
+
+Vue 3 + TypeScript + Vite SPA in the `frontend/` directory.
+
+**Tech:** Vue 3 (Composition API, `<script setup>`), TypeScript, Vite, PrimeVue (Aura theme), Tailwind CSS, Axios, Zod.
+
+**Structure (`frontend/src/`):**
+- `main.ts` — app entry point; registers PrimeVue and ToastService
+- `App.vue` — root component
+- `components/` — Vue single-file components (e.g. `RegistrationPage.vue`)
+- `services/` — API call functions using Axios (e.g. `UserService.ts`)
+- `models/` — TypeScript interfaces mirroring backend DTOs (e.g. `UserCreateRequest.ts`, `UserResponse.ts`)
+
+**Current state:** Only the registration page is implemented. Login, todo management, and routing are not yet built.
+
+**Forms:** Use `@primevue/forms` with `zodResolver` for schema-based validation. The `<Form>` component from PrimeVue handles field state; Zod defines the validation schema.
+
 ## Architecture
 
 Spring Boot 3 / Java 21 REST API with a 3-layer architecture:
