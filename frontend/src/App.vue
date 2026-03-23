@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
+import RegistrationPage from "./components/RegistrationPage.vue";
+import Toast from "primevue/toast";
 </script>
 
 <template>
-  <HelloWorld />
+  <Toast />
+  <RegistrationPage />
 </template>
