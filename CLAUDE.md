@@ -68,11 +68,13 @@ Vue 3 + TypeScript + Vite SPA in the `frontend/` directory.
 **Structure (`frontend/src/`):**
 - `main.ts` — app entry point; registers PrimeVue and ToastService
 - `App.vue` — root component
-- `components/` — Vue single-file components (e.g. `RegistrationPage.vue`)
-- `services/` — API call functions using Axios (e.g. `UserService.ts`)
-- `models/` — TypeScript interfaces mirroring backend DTOs (e.g. `UserCreateRequest.ts`, `UserResponse.ts`)
+- `components/` — Vue single-file components (`RegistrationPage.vue`, `LoginPage.vue`, `HomePage.vue`)
+- `services/` — API call functions using Axios (`UserService.ts`, `AuthService.ts`)
+- `models/` — TypeScript interfaces mirroring backend DTOs (`UserCreateRequest.ts`, `UserResponse.ts`, `TokenRequest.ts`, `TokenResponse.ts`)
 
-**Current state:** Only the registration page is implemented. Login, todo management, and routing are not yet built.
+**Current state:** Registration, login, and logout are implemented. Routing is in place with a navigation guard. Todo management frontend is not yet built.
+
+**Auth (frontend):** `AuthService.login()` stores the JWT in `localStorage`; `AuthService.logout()` removes it. The router uses a `beforeEach` guard with `meta.requiresAuth` on each route to redirect unauthenticated users to `/`.
 
 **Forms:** Use `@primevue/forms` with `zodResolver` for schema-based validation. The `<Form>` component from PrimeVue handles field state; Zod defines the validation schema.
 
