@@ -4,7 +4,7 @@ import PrimeVue from 'primevue/config';
 import Aura from '@primeuix/themes/aura';
 import ToastService from 'primevue/toastservice';
 import App from './App.vue'
-
+import router from './router';
 
 createApp(App)
     .use(PrimeVue, {
@@ -12,5 +12,6 @@ createApp(App)
             preset: Aura
         }
     })
+    .use(router)
     .use(ToastService)
     .mount('#app')
