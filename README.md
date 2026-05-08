@@ -103,3 +103,4 @@ Controller  →  Service  →  Repository
 
 - **Schema is recreated on every restart** — `ddl-auto=create` is set for development convenience; this would need to change before any production use.
 - **Frontend is registration-only** — login, todo management, and routing are not yet implemented.
+- **No shared Axios instance** — services import `axios` directly; a shared instance with a request interceptor (to attach the JWT automatically) and a response interceptor (to handle 401s globally) should be extracted to `src/services/api.ts`.

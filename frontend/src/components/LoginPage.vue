@@ -24,8 +24,9 @@ import Button from 'primevue/button';
 import Message from 'primevue/message';
 import { zodResolver } from '@primevue/forms/resolvers/zod';
 import { useToast } from "primevue/usetoast";
-import {UserService} from "../services/UserService.ts";
+import {AuthService} from "../services/AuthService.ts";
 import { z } from 'zod';
+import router from "../router.ts";
 
 const toast = useToast();
 const initialValues = ref({
@@ -43,10 +44,11 @@ const resolver = zodResolver(
 const onFormSubmit = async ({ valid, values }) => {
   if (valid) {
     try {
-      await UserService.createUser({username: values.username, password: values.password});
-      toast.add({ severity: 'success', summary: 'Registration was successful.', life: 3000 });
+      await AuthService.login({username: values.username, password: values.password});
+      await router.push("/home");
+      toast.add({ severity: 'success', summary: 'Login was successful.', life: 3000 });
     } catch (e) {
-      toast.add({ severity: 'error', summary: 'Registration was not successful.', life: 3000 });
+      toast.add({ severity: 'error', summary: 'Login was not successful.', life: 3000 });
     }
   }
 };
