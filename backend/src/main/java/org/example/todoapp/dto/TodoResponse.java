@@ -1,6 +1,6 @@
 package org.example.todoapp.dto;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
-public record TodoResponse(String id, String task, LocalDateTime due, boolean done, String ownerId) {
+public record TodoResponse(String id, String task, LocalDate due, boolean done, String ownerId) {
 }

@@ -1,10 +1,8 @@
 package org.example.todoapp.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
+import java.time.LocalDate;
 
 @Entity
 public class Todo {
@@ -13,7 +11,7 @@ public class Todo {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private String task;
-    private LocalDateTime due;
+    private LocalDate due;
     private boolean done;
     @ManyToOne
     @JoinColumn(name = "owner_id")
@@ -27,13 +25,13 @@ public class Todo {
         this.owner = owner;
     }
 
-    public Todo(String task, LocalDateTime due) {
+    public Todo(String task, LocalDate due) {
         this.task = task;
         this.due = due;
         this.done = false;
     }
 
-    public Todo(String task, LocalDateTime due, MyUser owner) {
+    public Todo(String task, LocalDate due, MyUser owner) {
         this(task, due);
         this.owner = owner;
     }
@@ -54,11 +52,11 @@ public class Todo {
         this.task = task;
     }
 
-    public LocalDateTime getDue() {
+    public LocalDate getDue() {
         return due;
     }
 
-    public void setDue(LocalDateTime due) {
+    public void setDue(LocalDate due) {
         this.due = due;
     }
 

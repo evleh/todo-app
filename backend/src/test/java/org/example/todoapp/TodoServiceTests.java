@@ -18,7 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -57,7 +57,7 @@ public class TodoServiceTests {
         // see docs/decisions/001-jpa-entity-id-testing-strategy.md
         ReflectionTestUtils.setField(owner, "id", ownerPrincipal.getUserId());
 
-        Todo todo = new Todo("test TodoService", LocalDateTime.now(), owner);
+        Todo todo = new Todo("test TodoService", LocalDate.now(), owner);
         // see docs/decisions/001-jpa-entity-id-testing-strategy.md
         ReflectionTestUtils.setField(todo, "id", "someTodoUUID1");
 
@@ -71,7 +71,7 @@ public class TodoServiceTests {
         // see docs/decisions/001-jpa-entity-id-testing-strategy.md
         ReflectionTestUtils.setField(owner, "id", ownerPrincipal.getUserId());
 
-        Todo todo = new Todo("test TodoService", LocalDateTime.now(), owner);
+        Todo todo = new Todo("test TodoService", LocalDate.now(), owner);
         // see docs/decisions/001-jpa-entity-id-testing-strategy.md
         ReflectionTestUtils.setField(todo, "id", "someTodoUUID2");
 
