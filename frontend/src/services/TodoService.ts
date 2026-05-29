@@ -26,4 +26,11 @@ export class TodoService{
         });
         return response.data;
     }
+
+    static async delete(id: string){
+        const response = await axios.delete(`${URL_TODOS}/${id}`, {
+            headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }
+        });
+        return response.data;
+    }
 }

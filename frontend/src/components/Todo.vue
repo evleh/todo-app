@@ -36,6 +36,15 @@ const toggleDone = async () => {
   }
 }
 
+const deleteTodo = async () => {
+  try {
+    await TodoService.delete(props.todo.id);
+    loadTodos();
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 const onFormSubmit = async ({valid, values}: {valid: boolean; values: Record<string, unknown>}) => {
   console.log("hiiii")
   if(valid){
@@ -71,8 +80,7 @@ const resolver = ({ values }) => {
     <Message v-if="$form.task?.invalid" severity="error" size="small" variant="simple">{{$form.task.error?.message}}</Message>
     <DatePicker v-model="dueDate" dateFormat="dd/mm/yy" />
     <Button label="Update" style="font-size: 1rem; color: #708090" severity="secondary" type="submit"/> <!-- todo: only enable update button if valid and dirty -->
-    <Button @click="console.log($form)"/>
-    <Button @click="console.log('fff')"/>
+    <Button label="Delete" style="font-size: 1rem; color: #708090" severity="secondary" @click="deleteTodo"/>
   </Form>
 </template>
 
