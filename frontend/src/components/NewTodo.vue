@@ -44,7 +44,7 @@ const resolver = ({ values }) => {
 </script>
 
 <template>
-  <Form v-slot="$form" :initialValues :resolver @submit="onFormSubmit" class="flex gap-4 w-full p-4" style="background: #edc0ed">
+  <Form v-slot="$form" :initialValues :resolver @submit="onFormSubmit" class="flex gap-4 w-full p-4">
     <div class="flex flex-col gap-1 task">
       <InputText name="task" type="text" placeholder="New Task" fluid />
       <Message v-if="$form.task?.invalid" severity="error" size="small" variant="simple">{{ $form.task.error?.message }}</Message>

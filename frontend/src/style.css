@@ -27,7 +27,6 @@
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 
   @media (max-width: 1024px) {
     font-size: 16px;
@@ -165,7 +164,7 @@ code {
   max-width: 100%;
   margin: 0 auto;
   text-align: center;
-  border-inline: 1px solid var(--border);
+  /* border-inline: 1px solid var(--border); */
   min-height: 100svh;
   display: flex;
   flex-direction: column;
@@ -306,5 +305,5 @@ code {
     border: var(--card-border);
     padding: 2rem;
     border-radius: 10px;
-    margin-bottom: 1rem;
+    margin: 1rem;
 }

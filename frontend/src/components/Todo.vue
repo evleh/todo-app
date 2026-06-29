@@ -74,7 +74,7 @@ const resolver = ({ values }) => {
 </script>
 
 <template>
-  <Form v-slot="$form" class="flex mb-2 gap-4 items-center todo" :initialValues="initialValues" @submit="onFormSubmit" :resolver>
+  <Form v-slot="$form" class="flex m-1 gap-4 items-center todo" :initialValues="initialValues" @submit="onFormSubmit" :resolver>
     <Checkbox name="done" type="submit" binary @click="toggleDone"/>
     <InputText name="task" type="text" placeholder="Your Task" fluid/>
     <Message v-if="$form.task?.invalid" severity="error" size="small" variant="simple">{{$form.task.error?.message}}</Message>
@@ -86,8 +86,10 @@ const resolver = ({ values }) => {
 
 <style scoped>
 .todo {
-  background: white;
-  padding: 0.85rem;
+  background: #1112;
+  opacity: 1;
+  padding: 0.5rem;
+  border-radius: 10px;
 }
 
 

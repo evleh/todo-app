@@ -1,8 +1,14 @@
-<template>
-  <Button @click="logout">Logout</Button>
-  <NewTodo @todo-created="loadTodos"></NewTodo>
+<template >
+  <div class="flex flex-col" style="background: #A809A845">
+    <Button style="align-self: flex-end" class="m-3" @click="logout">Logout</Button>
+    <h1>Todo App</h1>
+  </div>
 
-  <Accordion v-model:value="openPanels" multiple>
+  <div>
+    <NewTodo class="mb-3" @todo-created="loadTodos"></NewTodo>
+  </div>
+
+  <Accordion v-model:value="openPanels" multiple >
     <AccordionPanel value="0" :disabled="openTodos.length === 0">
       <AccordionHeader>
         <span class="task-header"> Open Tasks:
@@ -63,7 +69,7 @@ const loadTodos = async () => {
   todos.value = await TodoService.readAll();
 };
 
-provide(/* key */ 'loadTodos', /* value */ loadTodos);
+provide('loadTodos', loadTodos);
 
 onBeforeMount(loadTodos);
 

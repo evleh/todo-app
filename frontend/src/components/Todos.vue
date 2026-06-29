@@ -1,5 +1,5 @@
 <template>
-  <div class="card flex flex-col justify-center m-3" v-bind:style="{background: '#c084fc', color: 'black'}">
+  <div class="card flex flex-col m-2 p-5" v-bind:style="{background: '#1112', color: 'black'}">
     <div v-for="(item, index) in todos">
       <Todo :todo="item"
             :index="index"
