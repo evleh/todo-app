@@ -74,13 +74,17 @@ const resolver = ({ values }) => {
 </script>
 
 <template>
-  <Form v-slot="$form" class="flex m-1 gap-4 items-center todo" :initialValues="initialValues" @submit="onFormSubmit" :resolver>
-    <Checkbox name="done" type="submit" binary @click="toggleDone"/>
-    <InputText name="task" type="text" placeholder="Your Task" fluid/>
-    <Message v-if="$form.task?.invalid" severity="error" size="small" variant="simple">{{$form.task.error?.message}}</Message>
-    <DatePicker v-model="dueDate" dateFormat="dd/mm/yy" />
-    <Button label="Update" style="font-size: 1rem; color: #708090" severity="secondary" type="submit"/> <!-- todo: only enable update button if valid and dirty -->
-    <Button label="Delete" style="font-size: 1rem; color: #708090" severity="secondary" @click="deleteTodo"/>
+  <Form v-slot="$form" class="flex-col m-2 justify-center" :initialValues="initialValues" @submit="onFormSubmit" :resolver>
+    <div class="flex items-center todo gap-2">
+      <Checkbox name="done" type="submit" binary @click="toggleDone"/>
+      <InputText name="task" type="text" placeholder="Your Task" fluid/>
+      <DatePicker v-model="dueDate" dateFormat="dd/mm/yy" />
+      <Button label="Update" style="font-size: 1rem; color: #708090" severity="secondary" type="submit"/> <!-- todo: only enable update button if valid and dirty -->
+      <Button label="Delete" style="font-size: 1rem; color: #708090" severity="secondary" @click="deleteTodo"/>
+    </div>
+    <div class="pl-[1.75rem]">
+      <Message v-if="$form.task?.invalid" severity="error" size="small" variant="simple">{{$form.task.error?.message}}</Message>
+    </div>
   </Form>
 </template>
 

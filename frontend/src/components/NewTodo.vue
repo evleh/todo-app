@@ -43,21 +43,15 @@ const resolver = ({ values }) => {
 };
 </script>
 
-<template>
-  <Form v-slot="$form" :initialValues :resolver @submit="onFormSubmit" class="flex gap-4 w-full p-4">
-    <div class="flex flex-col gap-1 task">
-      <InputText name="task" type="text" placeholder="New Task" fluid />
+<template><Form v-slot="$form" :initialValues :resolver @submit="onFormSubmit" class="flex gap-2 p-4 items-start">
+    <div class="flex flex-col gap-1 grow">
+      <InputText name="task" type="text" placeholder="New Task"/>
       <Message v-if="$form.task?.invalid" severity="error" size="small" variant="simple">{{ $form.task.error?.message }}</Message>
     </div>
-    <div class="flex gap-1">
-      <InputText name="due" type="date" placeholder="due" fluid />
-    </div>
+    <InputText name="due" type="date" placeholder="due" />
     <Button type="submit" label="Add Todo" />
   </Form>
 </template>
 
 <style scoped>
-.task{
-  flex-grow: 2;
-}
 </style>
