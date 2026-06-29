@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 :root {
   --text: #6b6375;
   --text-h: #08060d;
@@ -59,7 +61,7 @@ body {
 
 h1,
 h2 {
-  font-family: var(--heading);
+  font-family: var(--heading), sans-serif;
   font-weight: 500;
   color: var(--text-h);
 }
@@ -297,8 +299,6 @@ code {
     border-right-color: var(--border);
   }
 }
-
-@import "tailwindcss";
 
 .card {
     background: var(--card-bg);
