@@ -1,5 +1,5 @@
 <template>
-  <div class="flex-1 flex justify-center p-4">
+  <div class="flex-1 flex justify-center items-start p-4">
     <div class="card w-full max-w-sm">
       <Form v-slot="$form" :resolver="resolver" :initialValues="initialValues" @submit="onFormSubmit" class="flex flex-col gap-4 w-full">
         <h2>Login</h2>
