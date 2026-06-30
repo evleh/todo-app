@@ -24,7 +24,7 @@ const onFormSubmit =  async ({valid, values}) => {
       await TodoService.create({task: values.task, due: values.due});
       emit('todoCreated');
     } catch (error){
-        toast.add({ severity: 'error', summary: 'Error when creating new task.', life: 3000 });
+      toast.add({ severity: 'error', summary: 'Error when creating new task.', life: 3000 });
     }
   }
 }

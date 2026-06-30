@@ -7,7 +7,9 @@ import {ref, inject, computed} from 'vue';
 import {TodoService} from "../services/TodoService.ts";
 import DatePicker from 'primevue/datepicker';
 import Message from "primevue/message";
+import { useToast } from "primevue/usetoast";
 
+const toast = useToast();
 const props = defineProps(['todo']);
 const initialValues = ref({ task: props.todo.task, done: props.todo.done });
 const dueDate = ref<Date | null>(parseDue(props.todo.due));
@@ -39,6 +41,7 @@ const toggleDone = async () => {
     await TodoService.update({id: props.todo.id, task: props.todo.task, due: props.todo.due, done: !props.todo.done});
     loadTodos();
   } catch(e){
+    toast.add({ severity: 'error', summary: 'Error: Task could not be marked as done.', life: 3000 });
     console.log(e);
   }
 }
@@ -48,6 +51,7 @@ const deleteTodo = async () => {
     await TodoService.delete(props.todo.id);
     loadTodos();
   } catch (e) {
+    toast.add({ severity: 'error', summary: 'Error: Task could not be deleted.', life: 3000 });
     console.log(e);
   }
 };
@@ -58,6 +62,7 @@ const onFormSubmit = async ({valid, values}: {valid: boolean; values: Record<str
       await TodoService.update({id: props.todo.id, task: values.task as string, due: formatDue(dueDate.value), done: values.done as boolean});
       loadTodos();
     } catch(e){
+      toast.add({ severity: 'error', summary: 'Error: Updates to task could not be saved', life: 3000 });
       console.log(e);
     }
   }
