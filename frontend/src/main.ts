@@ -6,6 +6,7 @@ import ToastService from 'primevue/toastservice';
 import App from './App.vue'
 import router from './router';
 import 'primeicons/primeicons.css'
+import Tooltip from 'primevue/tooltip';
 
 createApp(App)
     .use(PrimeVue, {
@@ -15,4 +16,5 @@ createApp(App)
     })
     .use(router)
     .use(ToastService)
+    .directive('tooltip', Tooltip)
     .mount('#app')

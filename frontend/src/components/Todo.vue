@@ -3,7 +3,7 @@ import InputText from 'primevue/inputtext';
 import {Form} from "@primevue/forms";
 import Checkbox from 'primevue/checkbox';
 import Button from 'primevue/button';
-import {ref, inject} from 'vue';
+import {ref, inject, computed} from 'vue';
 import {TodoService} from "../services/TodoService.ts";
 import DatePicker from 'primevue/datepicker';
 import Message from "primevue/message";
@@ -11,6 +11,13 @@ import Message from "primevue/message";
 const props = defineProps(['todo']);
 const initialValues = ref({ task: props.todo.task, done: props.todo.done });
 const dueDate = ref<Date | null>(parseDue(props.todo.due));
+const initialDueDate = parseDue(props.todo.due);
+const isDueDateDirty = computed(() => {
+  const cur = dueDate.value;
+  if (cur === null && initialDueDate === null) return false;
+  if (cur === null || initialDueDate === null) return true;
+  return cur.getTime() !== initialDueDate.getTime();
+});
 const loadTodos = inject<() => Promise<void>>('loadTodos');
 
 function parseDue(due: unknown): Date | null {
@@ -46,7 +53,6 @@ const deleteTodo = async () => {
 };
 
 const onFormSubmit = async ({valid, values}: {valid: boolean; values: Record<string, unknown>}) => {
-  console.log("hiiii")
   if(valid){
     try{
       await TodoService.update({id: props.todo.id, task: values.task as string, due: formatDue(dueDate.value), done: values.done as boolean});
@@ -78,9 +84,11 @@ const resolver = ({ values }) => {
     <div class="flex items-center todo gap-2">
       <Checkbox name="done" type="submit" binary @click="toggleDone"/>
       <InputText name="task" type="text" placeholder="Your Task" fluid/>
-      <DatePicker v-model="dueDate" dateFormat="dd/mm/yy" />
-      <Button label="Update" style="font-size: 1rem; color: #708090" severity="secondary" type="submit"/> <!-- todo: only enable update button if valid and dirty -->
-      <Button label="Delete" style="font-size: 1rem; color: #708090" severity="secondary" @click="deleteTodo"/>
+      <DatePicker v-model="dueDate" dateFormat="dd-mm-yy" placeholder="No due date" />
+      <Button icon="pi pi-trash" aria-label="Delete" style="color: #708090" severity="secondary" @click="deleteTodo"/>
+      <Button icon="pi pi-save" aria-label="Update" style="color: #708090" severity="secondary" type="submit"
+              v-tooltip.top="{ value: 'Save updated todo.', escape: false}"
+              :disabled="!$form.task?.dirty && !$form.done?.dirty && !isDueDateDirty"/>
     </div>
     <div class="pl-[1.75rem]">
       <Message v-if="$form.task?.invalid" severity="error" size="small" variant="simple">{{$form.task.error?.message}}</Message>

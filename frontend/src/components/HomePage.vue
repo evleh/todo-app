@@ -12,8 +12,7 @@
     <AccordionPanel value="0" :disabled="openTodos.length === 0">
       <AccordionHeader>
         <span class="task-header"> Open Tasks:
-          <span v-if="openTodos.length === 0">&nbsp; You have no open tasks.</span>
-          <span v-else> &nbsp; You have {{openTodos.length}} todo. </span>
+          <span> &nbsp; {{openTodos.length}} </span>
         </span>
       </AccordionHeader>
       <AccordionContent>
@@ -23,8 +22,7 @@
     <AccordionPanel value="1" :disabled="doneTodos.length === 0">
       <AccordionHeader>
         <span class="task-header"> Completed Tasks:
-          <span v-if="doneTodos.length === 0">&nbsp; You have no tasks completed. </span>
-          <span v-else> &nbsp; You have {{doneTodos.length}} todos completed. </span>
+          <span> &nbsp; {{doneTodos.length}} </span>
         </span>
       </AccordionHeader>
       <AccordionContent>
