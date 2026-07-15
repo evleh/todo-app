@@ -10,7 +10,6 @@
 
 <script setup lang="ts">
 import Todo from "./Todo.vue";
-import {defineProps} from 'vue';
 
 const {todos} = defineProps(['todos']);
 

@@ -1,8 +1,14 @@
 <template >
-  <div class="flex flex-col" style="background: #A809A845">
+  <RewardAnchor
+    class="header"
+    :show="showInHeader"
+    :animation="currentAnimation"
+    @complete="onAnimationComplete"
+    style="background-color: #A809A845;"
+  >
     <Button style="align-self: flex-end" class="m-3" @click="logout">Logout</Button>
     <h1>Todo App</h1>
-  </div>
+  </RewardAnchor>
 
   <div>
     <NewTodo class="mb-3" @todo-created="loadTodos"></NewTodo>
@@ -30,6 +36,7 @@
       </AccordionContent>
     </AccordionPanel>
   </Accordion>
+
 </template>
 
 <script setup lang="ts">
@@ -46,14 +53,24 @@ import Accordion from 'primevue/accordion';
 import AccordionPanel from 'primevue/accordionpanel';
 import AccordionHeader from 'primevue/accordionheader';
 import AccordionContent from 'primevue/accordioncontent';
+import RewardAnchor from './RewardAnchor.vue';
+import { randomAnimation } from '../animations';
+import type { AnimationMeta } from '../animations';
 
+// todos: data
 let todos = ref<Array<TodoResponse>>([]);
 
 const openTodos = computed(() => todos.value.filter(todo => !todo.done));
 const doneTodos = computed(() => todos.value.filter(todo => todo.done));
 
-const openPanels = ref(['0']);
+const loadTodos = async () => {
+  todos.value = await TodoService.readAll();
+};
 
+provide('loadTodos', loadTodos); // expose method to child components 
+
+// Accordion
+const openPanels = ref(['0']);
 watch(openTodos, (val) => {
   if (val.length === 0) openPanels.value = openPanels.value.filter(v => v !== '0');
   if (val.length !== 0) openPanels.value.push('0');
@@ -63,17 +80,28 @@ watch(doneTodos, (val) => {
 });
 
 
-const loadTodos = async () => {
-  todos.value = await TodoService.readAll();
-};
-
-provide('loadTodos', loadTodos);
-
+// setup
 onBeforeMount(loadTodos);
 
 function logout(){
   AuthService.logout();
   router.push("/");
+}
+
+// animation
+const currentAnimation = ref<AnimationMeta | null>(null);
+const showAnimation = ref(false);
+
+const showReward = () => {
+  currentAnimation.value = randomAnimation();
+  showAnimation.value = true;
+};
+provide('showReward', showReward);
+
+const showInHeader = computed(() => showAnimation.value && currentAnimation.value?.region === 'header');
+
+function onAnimationComplete() {
+  showAnimation.value = false;
 }
 </script>
 
