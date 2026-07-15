@@ -21,24 +21,28 @@ const containerRef = ref<HTMLDivElement | null>(null);
 
 let p5Instance: p5 | null = null;
 
+let animationCounter: number = 0; 
 
 function start() {
     cleanup();
     if (props.animation && containerRef.value) {
+        animationCounter++; 
+        const currentCounter = animationCounter; 
         const container = containerRef.value;
         p5Instance = new p5(
             (p) => props.animation!.sketch(p, {
-                onComplete: handleComplete,
+                onComplete: () => {
+                    // check if onComplete function belongs to the animation it was called by (arrow function is in the same closure as currentCounter)
+                    if(animationCounter === currentCounter){
+                        cleanup();
+                        emit('complete');
+                    }   
+                },
                 getSize: () => ({ width: container.clientWidth, height: container.clientHeight }),
             }),
             container,
         );
     }
-}
-
-function handleComplete() {
-    cleanup();
-    emit('complete');
 }
 
 function cleanup() {
