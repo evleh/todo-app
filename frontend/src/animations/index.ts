@@ -1,5 +1,6 @@
 import type p5 from 'p5';
 import { cloudSketch } from './cloud';
+import { starSketch } from './star';
 
 export type SketchFn = (p: p5, sketchApi: SketchApi) => void;
 
@@ -17,12 +18,13 @@ export interface AnimationMeta {
 
 export const ANIMATIONS: Record<string, AnimationMeta> = {
   cloud: { id: 'cloud', name: 'Floating Cloud', sketch: cloudSketch, region: 'header' },
+  star: { id: 'star', name: 'Floating Star', sketch: starSketch, region: 'header' },
 };
 
 export const ALL_ANIMATIONS = Object.values(ANIMATIONS);
 
 export function randomAnimation(): AnimationMeta {
-  return ALL_ANIMATIONS[Math.floor(Math.random() * ALL_ANIMATIONS.length)];
+  return ALL_ANIMATIONS[Math.floor(Math.random() * ALL_ANIMATIONS.length)]; 
 }
 
 // Used in Phase 2 when the backend returns an earnedAnimationId
