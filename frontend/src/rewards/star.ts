@@ -1,6 +1,6 @@
 import type p5 from 'p5';
-import type { SketchApi } from '.';
-import { randomInt } from './utility';
+import type { SketchApi } from './rewards';
+import { randomInt } from './random';
 
 export const starSketch = (p: p5, {onComplete, getSize}: SketchApi) => {
 

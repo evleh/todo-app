@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import AnimationBackground from './RewardBackground.vue/index.js';
-import type { AnimationMeta } from '../rewards/index.ts';
+import RewardPlayer from './RewardPlayer.vue';
+import type { RewardMeta } from '../rewards/rewards.ts';
 
 defineProps<{
   show: boolean;
-  animation: AnimationMeta | null;
+  reward: RewardMeta | null;
 }>();
 
 const emit = defineEmits<{ complete: [] }>();
@@ -12,7 +12,7 @@ const emit = defineEmits<{ complete: [] }>();
 
 <template>
   <div class="reward-anchor">
-    <AnimationBackground :active="show" :animation="animation" @complete="emit('complete')" />
+    <RewardPlayer :active="show" :animation="reward" @complete="emit('complete')" />
     <div class="reward-anchor-content"><slot /></div>
   </div>
 </template>

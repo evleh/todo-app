@@ -1,9 +1,9 @@
 <template >
   <RewardAnchor
     class="header"
-    :show="isHeaderAnimationActive"
-    :animation="currentAnimation"
-    @complete="onAnimationComplete"
+    :show="isHeaderAnchorActive"
+    :reward="currentReward"
+    @complete="onRewardComplete"
   >
     <Button style="align-self: flex-end" class="m-3" @click="logout">Logout</Button>
     <h1>Todo App</h1>
@@ -53,8 +53,8 @@ import AccordionPanel from 'primevue/accordionpanel';
 import AccordionHeader from 'primevue/accordionheader';
 import AccordionContent from 'primevue/accordioncontent';
 import RewardAnchor from './RewardAnchor.vue';
-import { randomAnimation } from '../rewards/index.ts';
-import type { AnimationMeta } from '../rewards/index.ts';
+import { randomReward } from '../rewards/rewards.ts';
+import type { RewardMeta } from '../rewards/rewards.ts';
 
 // todos: data
 let todos = ref<Array<TodoResponse>>([]);
@@ -87,20 +87,20 @@ watch(doneTodos, (val) => {
 });
 
 
-// animation
-const currentAnimation = ref<AnimationMeta | null>(null);
-const isAnimationActive = ref(false);
+// reward
+const currentReward = ref<RewardMeta | null>(null);
+const isRewardActive = ref(false);
 
 const showReward = () => { 
-  currentAnimation.value = randomAnimation();
-  isAnimationActive.value = true;
+  currentReward.value = randomReward();
+  isRewardActive.value = true;
 };
 provide('showReward', showReward);
 
-const isHeaderAnimationActive = computed(() => isAnimationActive.value && currentAnimation.value?.region === 'header');
+const isHeaderAnchorActive = computed(() => isRewardActive.value && currentReward.value?.region === 'header');
 
-function onAnimationComplete() {
-  isAnimationActive.value = false;
+function onRewardComplete() {
+  isRewardActive.value = false;
 }
 </script>
 

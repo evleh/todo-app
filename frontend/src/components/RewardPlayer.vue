@@ -6,13 +6,13 @@
 
 <script setup lang="ts">
 import p5 from 'p5';
-import type { AnimationMeta } from '../rewards';
+import type { RewardMeta } from '../rewards/rewards';
 import { ref, watch, onBeforeUnmount } from 'vue';
 
 
 const props = defineProps<{
     active: boolean;
-    animation: AnimationMeta | null
+    animation: RewardMeta | null
 }>();
 
 const emit = defineEmits<{ complete: [] }>();
