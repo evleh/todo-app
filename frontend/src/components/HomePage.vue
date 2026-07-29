@@ -69,6 +69,14 @@ const loadTodos = async () => {
 
 provide('loadTodos', loadTodos); // expose method to child components 
 
+// setup
+onBeforeMount(loadTodos);
+
+function logout(){
+  AuthService.logout();
+  router.push("/");
+}
+
 // Accordion
 const openPanels = ref(['0']);
 watch(openTodos, (val) => {
@@ -80,28 +88,20 @@ watch(doneTodos, (val) => {
 });
 
 
-// setup
-onBeforeMount(loadTodos);
-
-function logout(){
-  AuthService.logout();
-  router.push("/");
-}
-
 // animation
 const currentAnimation = ref<AnimationMeta | null>(null);
-const showAnimation = ref(false);
+const isShowingAnimation = ref(false);
 
 const showReward = () => {
   currentAnimation.value = randomAnimation();
-  showAnimation.value = true;
+  isShowingAnimation.value = true;
 };
 provide('showReward', showReward);
 
-const showInHeader = computed(() => showAnimation.value && currentAnimation.value?.region === 'header');
+const showInHeader = computed(() => isShowingAnimation.value && currentAnimation.value?.region === 'header');
 
 function onAnimationComplete() {
-  showAnimation.value = false;
+  isShowingAnimation.value = false;
 }
 </script>
 
