@@ -13,7 +13,6 @@ const emit = defineEmits<{
   completed: []
 }>();
 
-
 const toast = useToast();
 const props = defineProps(['todo']);
 const initialValues = ref({ task: props.todo.task, done: props.todo.done });
@@ -44,12 +43,15 @@ function formatDue(date: Date | null): string | null {
 
 const toggleDone = async () => {
   try{
-    const completingNow = !props.todo.done; 
-    await TodoService.update({id: props.todo.id, task: props.todo.task, due: props.todo.due, done: !props.todo.done});
+    const willBeDone = !props.todo.done; 
+    
+    await TodoService.update({id: props.todo.id, task: props.todo.task, due: props.todo.due, done: willBeDone});
     await loadTodos();
-    if (completingNow) {
+    
+    if (willBeDone) {
       showReward(); 
     }
+    
   } catch(e){
     toast.add({ severity: 'error', summary: 'Error: Task could not be marked as done.', life: 3000 });
     console.log(e);

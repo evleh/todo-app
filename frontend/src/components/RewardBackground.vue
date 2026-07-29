@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
 import p5 from 'p5';
-import type { AnimationMeta } from '../animations';
+import type { AnimationMeta } from '../rewards';
 import { ref, watch, onBeforeUnmount } from 'vue';
 
 

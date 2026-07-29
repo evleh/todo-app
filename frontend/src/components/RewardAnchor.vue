@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import AnimationBackground from './AnimationBackground.vue';
-import type { AnimationMeta } from '../animations';
+import AnimationBackground from './RewardBackground.vue/index.js';
+import type { AnimationMeta } from '../rewards/index.ts';
 
 defineProps<{
   show: boolean;
