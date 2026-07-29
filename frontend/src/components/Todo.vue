@@ -9,6 +9,10 @@ import DatePicker from 'primevue/datepicker';
 import Message from "primevue/message";
 import { useToast } from "primevue/usetoast";
 
+const emit = defineEmits<{
+  completed: []
+}>();
+
 const toast = useToast();
 const props = defineProps(['todo']);
 const initialValues = ref({ task: props.todo.task, done: props.todo.done });
@@ -21,6 +25,7 @@ const isDueDateDirty = computed(() => {
   return cur.getTime() !== initialDueDate.getTime();
 });
 const loadTodos = inject<() => Promise<void>>('loadTodos');
+const showReward = inject<() => void>('showReward'); 
 
 function parseDue(due: unknown): Date | null {
   if (!due) return null;
@@ -38,8 +43,15 @@ function formatDue(date: Date | null): string | null {
 
 const toggleDone = async () => {
   try{
-    await TodoService.update({id: props.todo.id, task: props.todo.task, due: props.todo.due, done: !props.todo.done});
-    loadTodos();
+    const willBeDone = !props.todo.done; 
+    
+    await TodoService.update({id: props.todo.id, task: props.todo.task, due: props.todo.due, done: willBeDone});
+    await loadTodos();
+    
+    if (willBeDone) {
+      showReward(); 
+    }
+    
   } catch(e){
     toast.add({ severity: 'error', summary: 'Error: Task could not be marked as done.', life: 3000 });
     console.log(e);
@@ -99,6 +111,7 @@ const resolver = ({ values }) => {
       <Message v-if="$form.task?.invalid" severity="error" size="small" variant="simple">{{$form.task.error?.message}}</Message>
     </div>
   </Form>
+   
 </template>
 
 <style scoped>

@@ -5,6 +5,7 @@ target/
 !**/src/test/**/target/
 node_modules/
 package-lock.json
+plans/
 
 ### STS ###
 .apt_generated

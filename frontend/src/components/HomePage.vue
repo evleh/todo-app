@@ -1,8 +1,13 @@
 <template >
-  <div class="flex flex-col" style="background: #A809A845">
+  <RewardAnchor
+    class="header"
+    :show="isHeaderAnchorActive"
+    :reward="currentReward"
+    @complete="onRewardComplete"
+  >
     <Button style="align-self: flex-end" class="m-3" @click="logout">Logout</Button>
     <h1>Todo App</h1>
-  </div>
+  </RewardAnchor>
 
   <div>
     <NewTodo class="mb-3" @todo-created="loadTodos"></NewTodo>
@@ -30,6 +35,7 @@
       </AccordionContent>
     </AccordionPanel>
   </Accordion>
+
 </template>
 
 <script setup lang="ts">
@@ -46,14 +52,32 @@ import Accordion from 'primevue/accordion';
 import AccordionPanel from 'primevue/accordionpanel';
 import AccordionHeader from 'primevue/accordionheader';
 import AccordionContent from 'primevue/accordioncontent';
+import RewardAnchor from './RewardAnchor.vue';
+import { randomReward } from '../rewards/rewards.ts';
+import type { RewardMeta } from '../rewards/rewards.ts';
 
+// todos: data
 let todos = ref<Array<TodoResponse>>([]);
 
 const openTodos = computed(() => todos.value.filter(todo => !todo.done));
 const doneTodos = computed(() => todos.value.filter(todo => todo.done));
 
-const openPanels = ref(['0']);
+const loadTodos = async () => {
+  todos.value = await TodoService.readAll();
+};
 
+provide('loadTodos', loadTodos); // expose method to child components 
+
+// setup
+onBeforeMount(loadTodos);
+
+function logout(){
+  AuthService.logout();
+  router.push("/");
+}
+
+// Accordion
+const openPanels = ref(['0']);
 watch(openTodos, (val) => {
   if (val.length === 0) openPanels.value = openPanels.value.filter(v => v !== '0');
   if (val.length !== 0) openPanels.value.push('0');
@@ -63,21 +87,28 @@ watch(doneTodos, (val) => {
 });
 
 
-const loadTodos = async () => {
-  todos.value = await TodoService.readAll();
+// reward
+const currentReward = ref<RewardMeta | null>(null);
+const isRewardActive = ref(false);
+
+const showReward = () => { 
+  currentReward.value = randomReward();
+  isRewardActive.value = true;
 };
+provide('showReward', showReward);
 
-provide('loadTodos', loadTodos);
+const isHeaderAnchorActive = computed(() => isRewardActive.value && currentReward.value?.region === 'header');
 
-onBeforeMount(loadTodos);
-
-function logout(){
-  AuthService.logout();
-  router.push("/");
+function onRewardComplete() {
+  isRewardActive.value = false;
 }
 </script>
 
 <style scoped>
+
+.header {
+  background-color: #A809A845;
+}
 
 .tasks{
   max-height: 40vh;
