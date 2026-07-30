@@ -2,7 +2,13 @@
 
 A full-stack todo application with a Spring Boot 3 / Java 21 REST API backend and a Vue 3 frontend.
 Started as example code from a backend development course and extended independently to practice and refine full-stack fundamentals — including layered architecture, database persistence, authentication, authorization, and frontend-backend integration.
-New features are written independently first, then reviewed by claude-code and refined iteratively.
+Also serves as a testbed for learning how to best use Claude Code as a development tool.
+
+To make completing todos more fun, a small reward system plays a canvas sketch when a todo is marked done.
+Currently there is one reward showing a star in which some parameters are randomized to make it unique.
+
+![Star reward sketch](docs/images/randomStar.png)
+
 
 ## Tech Stack
 
@@ -23,11 +29,13 @@ New features are written independently first, then reviewed by claude-code and r
 - **Tailwind CSS** — utility-first CSS framework
 - **Axios** — HTTP client for API calls
 - **Zod** — schema validation for forms
+- **p5.js** — canvas-based reward animation shown when a todo is completed
 
 ## Getting Started
 
 **1. Start the database**
 ```bash
+cd backend
 docker compose up
 ```
 
@@ -96,11 +104,11 @@ Controller  →  Service  →  Repository
 ## Running Tests
 
 ```bash
+cd backend
 ./mvnw test
 ```
 
 ## Known Limitations / What's next
 
 - **Schema is recreated on every restart** — `ddl-auto=create` is set for development convenience; this would need to change before any production use.
-- **Frontend todo management not yet built** — registration, login, logout, and routing are implemented; the todo UI is not.
 - **No shared Axios instance** — services import `axios` directly; a shared instance with a request interceptor (to attach the JWT automatically) and a response interceptor (to handle 401s globally) should be extracted to `src/services/api.ts`.
