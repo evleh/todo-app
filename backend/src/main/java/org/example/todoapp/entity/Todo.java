@@ -3,6 +3,8 @@ package org.example.todoapp.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Todo {
@@ -16,6 +18,12 @@ public class Todo {
     @ManyToOne
     @JoinColumn(name = "owner_id")
     private MyUser owner;
+
+    @ManyToOne
+    private Todo parent; 
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<Todo> subtasks = new ArrayList<>();
 
     public MyUser getOwner() {
         return owner;
@@ -67,4 +75,22 @@ public class Todo {
     public void setDone(boolean done) {
         this.done = done;
     }
+
+    public Todo getParent() {
+        return parent;
+    }
+
+    public void setParent(Todo parent) {
+        this.parent = parent;
+    }
+
+    public List<Todo> getSubtasks() {
+        return subtasks;
+    }
+
+    public void setSubtasks(List<Todo> subtasks) {
+        this.subtasks = subtasks;
+    }
+
+    
 }
