@@ -40,3 +40,13 @@ cd frontend && npm run dev   # runs at http://localhost:5173
 ## Frontend Status
 
 Registration, login, and logout are fully implemented. Todo management frontend is not yet built.
+
+## Agent skills
+
+### Issue tracker
+
+Issues are tracked in GitHub Issues for `evleh/todo-app`, using the `gh` CLI. See `docs/agents/issue-tracker.md`.
+
+### Domain docs
+
+Single-context layout — one `CONTEXT.md` + `docs/adr/` at the repo root (not yet created; created lazily by domain-modeling skill). See `docs/agents/domain.md`.
