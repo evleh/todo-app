@@ -15,11 +15,13 @@ public class Todo {
     private String task;
     private LocalDate due;
     private boolean done;
+    
     @ManyToOne
     @JoinColumn(name = "owner_id")
     private MyUser owner;
 
     @ManyToOne
+    @JoinColumn(name = "parent_id")
     private Todo parent; 
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL,
             orphanRemoval = true)
@@ -37,6 +39,7 @@ public class Todo {
         this.task = task;
         this.due = due;
         this.done = false;
+        this.parent = null; 
     }
 
     public Todo(String task, LocalDate due, MyUser owner) {
@@ -44,13 +47,16 @@ public class Todo {
         this.owner = owner;
     }
 
+    public Todo(String task, LocalDate due, MyUser owner, Todo parent) {
+        this(task, due, owner);
+        this.parent = parent;
+    }
+
     public Todo() {}
 
     public String getId() {
         return id;
     }
-
-
 
     public String getTask() {
         return task;
@@ -91,6 +97,5 @@ public class Todo {
     public void setSubtasks(List<Todo> subtasks) {
         this.subtasks = subtasks;
     }
-
-    
+   
 }

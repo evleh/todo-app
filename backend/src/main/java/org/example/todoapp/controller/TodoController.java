@@ -39,6 +39,12 @@ public class TodoController {
         return this.todoService.create(todo, principal);
     }
 
+    @PostMapping("/{parentId}/subtasks")
+    @ResponseStatus(HttpStatus.CREATED)
+    public TodoResponse createSubtask(@PathVariable String parentId, @RequestBody @Valid TodoCreateRequest todo, @AuthenticationPrincipal UserPrincipal principal){
+        return this.todoService.createSubtask(todo, principal, parentId); 
+    }
+
     @PutMapping("/{id}")
     public TodoResponse update(@PathVariable String id, @RequestBody @Valid TodoUpdateRequest request, @AuthenticationPrincipal UserPrincipal principal){
         return this.todoService.update(id, request, principal);
