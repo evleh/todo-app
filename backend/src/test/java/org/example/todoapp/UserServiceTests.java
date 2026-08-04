@@ -61,7 +61,7 @@ public class UserServiceTests {
         void shouldReturnUserIfPresent(){
             // arrange
             MyUser user = new MyUser();
-            // see docs/decisions/001-jpa-entity-id-testing-strategy.md
+            // see docs/adr/0001-jpa-entity-id-testing-strategy.md 
             ReflectionTestUtils.setField(user, "id", "someUUID");
             when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
 
@@ -77,7 +77,7 @@ public class UserServiceTests {
         void shouldThrowWhenUserNotFound(){
             // arrange
             MyUser user = new MyUser();
-            // see docs/decisions/001-jpa-entity-id-testing-strategy.md
+            // see docs/adr/0001-jpa-entity-id-testing-strategy.md 
             ReflectionTestUtils.setField(user, "id", "someUUID");
 
             when(userRepository.findById(user.getId())).thenReturn(Optional.empty());
@@ -98,7 +98,7 @@ public class UserServiceTests {
             when(userRepository.findByUsername(request.username())).thenReturn(Optional.empty());
             when(passwordEncoder.encode("password")).thenReturn("hashed_password");
             MyUser savedUser = new MyUser();
-            // see docs/decisions/001-jpa-entity-id-testing-strategy.md
+            // see docs/adr/0001-jpa-entity-id-testing-strategy.md 
             ReflectionTestUtils.setField(savedUser, "id", "some-uuid");
             savedUser.setUsername(request.username());
             when(userRepository.save(any())).thenReturn(savedUser);
@@ -141,7 +141,7 @@ public class UserServiceTests {
         void shouldDeleteUserWhenFound(){
             // arrange
             MyUser user = new MyUser();
-            // see docs/decisions/001-jpa-entity-id-testing-strategy.md
+            // see docs/adr/0001-jpa-entity-id-testing-strategy.md 
             ReflectionTestUtils.setField(user, "id", "some_UUID");
             when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
 
@@ -174,7 +174,7 @@ public class UserServiceTests {
             UserUpdateRequest request = new UserUpdateRequest("username", "new-password");
             MyUser updatedUser = new MyUser();
             updatedUser.setUsername(request.username());
-            // see docs/decisions/001-jpa-entity-id-testing-strategy.md
+            // see docs/adr/0001-jpa-entity-id-testing-strategy.md 
             ReflectionTestUtils.setField(updatedUser, "id", id);
             when(userRepository.findById(id)).thenReturn(Optional.of(updatedUser));
             when(passwordEncoder.encode(request.password())).thenReturn("hashed_password");
