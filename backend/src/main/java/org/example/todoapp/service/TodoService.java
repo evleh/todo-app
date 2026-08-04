@@ -6,6 +6,7 @@ import org.example.todoapp.dto.TodoUpdateRequest;
 import org.example.todoapp.entity.MyUser;
 import org.example.todoapp.entity.Todo;
 import org.example.todoapp.exception.EntityNotFoundException;
+import org.example.todoapp.exception.InvalidSubtaskParentException;
 import org.example.todoapp.exception.PermissionDeniedException;
 import org.example.todoapp.exception.TodoIdNotFoundException;
 import org.example.todoapp.repository.TodoRepository;
@@ -62,6 +63,17 @@ public class TodoService {
             throw new TodoAlreadyExcistsException();
         }
         Todo toSave = new Todo(todo.task(), todo.due(), creator);
+        Todo saved = todoRepository.save(toSave);
+        return toResponse(saved);
+    }
+
+    public TodoResponse createSubtask(TodoCreateRequest todo, UserPrincipal principal, String parentId){
+        Todo parent = todoRepository.findById(parentId).orElseThrow(TodoIdNotFoundException::new);
+        assertOwnerOrAdmin(parent, principal); 
+        
+        if (parent.getParent() != null) throw new InvalidSubtaskParentException(); 
+
+        Todo toSave = new Todo(todo.task(), todo.due(), parent.getOwner(), parent);
         Todo saved = todoRepository.save(toSave);
         return toResponse(saved);
     }

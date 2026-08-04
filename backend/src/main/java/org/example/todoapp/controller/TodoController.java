@@ -12,26 +12,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-/**
-
- * Implementierung Controller
- *      - @RestController: RestController kombiniert Controller und ResponseBody (?)
- *      - @RequestMapping
- *      - @GetMapping, @PostMapping, @DeleteMapping, @PutMapping
- *      - @PathVariable
- *      - @RequestBody: Ist Teil von Http-Request der Daten überträgt
- *      - Input: Serialization/Deserialization: Datenumwandlung von Objekten und Formaten zur Datenübertragung über Netzwerke
- *      (z.b.: JSON, XML). Serialization (Java-Objekt zu JSON) / Deserialization (JSON zu Java-Object)
- * CRUD Controller
- * HTTP Methoden auf CRUD gemappt
- *
- * 20.5.:
-
- *
- *
- */
 @RestController
-@RequestMapping("/todos") // für Mapping von http-request für den ganzen Controller
+@RequestMapping("/todos") 
 public class TodoController {
 
     private final TodoService todoService;
@@ -39,7 +21,6 @@ public class TodoController {
     public TodoController(TodoService todoService){
         this.todoService = todoService;
     }
-
 
     @GetMapping // requires resource-level authorization i.e role-based authorization would be redundant
     public List<TodoResponse> readAll(@AuthenticationPrincipal UserPrincipal principal){
@@ -56,6 +37,12 @@ public class TodoController {
     @ResponseStatus(HttpStatus.CREATED)
     public TodoResponse create(@RequestBody @Valid TodoCreateRequest todo, @AuthenticationPrincipal UserPrincipal principal){
         return this.todoService.create(todo, principal);
+    }
+
+    @PostMapping("/{parentId}/subtasks")
+    @ResponseStatus(HttpStatus.CREATED)
+    public TodoResponse createSubtask(@PathVariable String parentId, @RequestBody @Valid TodoCreateRequest todo, @AuthenticationPrincipal UserPrincipal principal){
+        return this.todoService.createSubtask(todo, principal, parentId); 
     }
 
     @PutMapping("/{id}")
