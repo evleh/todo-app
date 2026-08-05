@@ -97,7 +97,7 @@ public class TodoServiceTests {
             Todo todoOfAdmin = todoOwnedByAdmin();
             todos.add(todoOfUser);
             todos.add(todoOfAdmin);
-            when(todoRepository.findAll()).thenReturn(todos);
+            when(todoRepository.findByParentIsNull()).thenReturn(todos);
 
             // act
             List<TodoResponse> response = todoService.readAll(admin);
@@ -125,13 +125,13 @@ public class TodoServiceTests {
             todos.add(todoOfUser);
 
             when(userRepository.findById(userPrincipal.getUserId())).thenReturn(Optional.of(user));
-            when(todoRepository.findByOwner(any(MyUser.class))).thenReturn(todos);
+            when(todoRepository.findByOwnerAndParentIsNull(any(MyUser.class))).thenReturn(todos);
 
             // act
             List<TodoResponse> response = todoService.readAll(userPrincipal);
 
             // assert
-            verify(todoRepository).findByOwner(user);
+            verify(todoRepository).findByOwnerAndParentIsNull(user);
             assertEquals(todoOfUser.getTask(), response.getFirst().task());
             assertEquals(todoOfUser.getId(), response.getFirst().id());
             assertEquals(todoOfUser.getOwner().getId(), response.getFirst().ownerId());
@@ -158,13 +158,13 @@ public class TodoServiceTests {
             ReflectionTestUtils.setField(user, "id", userPrincipal.getUserId());
 
             when(userRepository.findById(userPrincipal.getUserId())).thenReturn(Optional.of(user));
-            when(todoRepository.findByOwner(any(MyUser.class))).thenReturn(Collections.emptyList());
+            when(todoRepository.findByOwnerAndParentIsNull(any(MyUser.class))).thenReturn(Collections.emptyList());
 
             // act
             List<TodoResponse> response = todoService.readAll(userPrincipal);
 
             // assert
-            verify(todoRepository).findByOwner(user);
+            verify(todoRepository).findByOwnerAndParentIsNull(user);
             assertTrue(response.isEmpty());
         }
 
@@ -172,7 +172,7 @@ public class TodoServiceTests {
         void shouldReturnEmptyListWhenAdminAndNoTodosExist() {
             // arrange
             UserPrincipal admin = adminUserPrincipal();
-            when(todoRepository.findAll()).thenReturn(Collections.emptyList());
+            when(todoRepository.findByParentIsNull()).thenReturn(Collections.emptyList());
 
             // act
             List<TodoResponse> response = todoService.readAll(admin);
@@ -181,6 +181,77 @@ public class TodoServiceTests {
             assertTrue(response.isEmpty());
         }
 
+    }
+
+    @Nested
+    class ReadTests {
+
+        @Test
+        void shouldEmbedSubtasksForTopLevelTodo(){
+            // arrange
+            Todo parent = todoOwnedBySomeUser(); // parent == null
+
+            Todo subtask1 = new Todo("first subtask", LocalDate.now(), parent.getOwner(), parent);
+            ReflectionTestUtils.setField(subtask1, "id", "subtaskUUID1");
+            Todo subtask2 = new Todo("second subtask", LocalDate.now(), parent.getOwner(), parent);
+            ReflectionTestUtils.setField(subtask2, "id", "subtaskUUID2");
+            parent.setSubtasks(List.of(subtask1, subtask2));
+
+            when(todoRepository.findById(parent.getId())).thenReturn(Optional.of(parent));
+
+            // act
+            TodoResponse response = todoService.read(parent.getId());
+
+            // assert
+            assertNotNull(response.subtasks(), "a top-level todo's subtasks list must be populated, not null");
+            assertEquals(2, response.subtasks().size());
+            assertEquals(subtask1.getId(), response.subtasks().get(0).id());
+            assertEquals(subtask1.getTask(), response.subtasks().get(0).task());
+            assertEquals(parent.getId(), response.subtasks().get(0).parentId());
+            assertEquals(subtask2.getId(), response.subtasks().get(1).id());
+        }
+
+        @Test
+        void shouldReturnEmptySubtasksListForATodoWithNoSubtasks(){
+            // arrange
+            Todo parent = todoOwnedBySomeUser(); // subtasks defaults to an empty list
+
+            when(todoRepository.findById(parent.getId())).thenReturn(Optional.of(parent));
+
+            // act
+            TodoResponse response = todoService.read(parent.getId());
+
+            // assert
+            assertNotNull(response.subtasks());
+            assertTrue(response.subtasks().isEmpty());
+        }
+
+        @Test
+        void shouldReturnEmptySubtasksListForASubtaskItself(){
+            // arrange — a subtask can't have subtasks of its own
+            Todo parent = todoOwnedBySomeUser();
+            Todo subtask = new Todo("buy milk", LocalDate.now(), parent.getOwner(), parent);
+            ReflectionTestUtils.setField(subtask, "id", "subtaskUUID3");
+
+            when(todoRepository.findById(subtask.getId())).thenReturn(Optional.of(subtask));
+
+            // act
+            TodoResponse response = todoService.read(subtask.getId());
+
+            // assert
+            assertEquals(parent.getId(), response.parentId());
+            assertNotNull(response.subtasks(), "a subtask's subtasks list must be empty, not null");
+            assertTrue(response.subtasks().isEmpty());
+        }
+
+        @Test
+        void shouldThrowWhenTodoDoesNotExist(){
+            // arrange
+            when(todoRepository.findById("missingId")).thenReturn(Optional.empty());
+
+            // act & assert
+            assertThrows(TodoIdNotFoundException.class, () -> todoService.read("missingId"));
+        }
     }
 
     @Nested

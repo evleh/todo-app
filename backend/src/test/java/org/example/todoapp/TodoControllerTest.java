@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.todoapp.dto.TodoCreateRequest;
 import org.example.todoapp.dto.TokenRequest;
 import org.example.todoapp.entity.MyUser;
+import org.example.todoapp.entity.Role;
 import org.example.todoapp.entity.Todo;
 import org.example.todoapp.repository.TodoRepository;
 import org.example.todoapp.repository.UserRepository;
@@ -19,6 +20,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
 
+import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -142,6 +145,89 @@ class TodoControllerTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(request)))
                     .andExpect(status().isBadRequest());
+        }
+    }
+
+    @Nested
+    class ViewEmbeddedSubtasksTests {
+
+        @Test
+        void getParentById_asOwner_returnsSubtaskEmbedded() throws Exception {
+            // arrange
+            String token = obtainToken(OWNER_USERNAME);
+            Todo subtask = todoRepository.save(new Todo("buy milk", LocalDate.now(), owner, parentTodo));
+
+            // act & assert
+            mockMvc.perform(get("/todos/{id}", parentTodo.getId())
+                            .header("Authorization", "Bearer " + token))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.subtasks", hasSize(1)))
+                    .andExpect(jsonPath("$.subtasks[0].id").value(subtask.getId()))
+                    .andExpect(jsonPath("$.subtasks[0].task").value("buy milk"))
+                    .andExpect(jsonPath("$.subtasks[0].parentId").value(parentTodo.getId()))
+                    .andExpect(jsonPath("$.subtasks[0].subtasks", hasSize(0)));
+        }
+
+        @Test
+        void getParentById_withNoSubtasks_returnsEmptySubtasksList() throws Exception {
+            // arrange
+            String token = obtainToken(OWNER_USERNAME);
+
+            // act & assert
+            mockMvc.perform(get("/todos/{id}", parentTodo.getId())
+                            .header("Authorization", "Bearer " + token))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.subtasks").exists())
+                    .andExpect(jsonPath("$.subtasks", hasSize(0)));
+        }
+
+        @Test
+        void getSubtaskById_asOwner_returnsEmptySubtasksList() throws Exception {
+            // arrange
+            String token = obtainToken(OWNER_USERNAME);
+            Todo subtask = todoRepository.save(new Todo("buy milk", LocalDate.now(), owner, parentTodo));
+
+            // act & assert
+            mockMvc.perform(get("/todos/{id}", subtask.getId())
+                            .header("Authorization", "Bearer " + token))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.parentId").value(parentTodo.getId()))
+                    .andExpect(jsonPath("$.subtasks").exists())
+                    .andExpect(jsonPath("$.subtasks", hasSize(0)));
+        }
+
+        @Test
+        void getAllTodos_asOwner_excludesSubtaskAsStandaloneEntry() throws Exception {
+            // arrange
+            String token = obtainToken(OWNER_USERNAME);
+            todoRepository.save(new Todo("buy milk", LocalDate.now(), owner, parentTodo));
+
+            // act & assert — only the top-level parentTodo shows up, the subtask does not appear as a separate entry
+            mockMvc.perform(get("/todos")
+                            .header("Authorization", "Bearer " + token))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$", hasSize(1)))
+                    .andExpect(jsonPath("$[0].id").value(parentTodo.getId()));
+        }
+
+        @Test
+        void getAllTodos_asAdmin_excludesSubtaskAsStandaloneEntryAcrossAllUsers() throws Exception {
+            // arrange
+            MyUser admin = new MyUser();
+            admin.setUsername("subtask-admin");
+            admin.setPassword(passwordEncoder.encode(PASSWORD));
+            admin.setRole(Role.ADMIN);
+            userRepository.save(admin);
+            String token = obtainToken("subtask-admin");
+
+            todoRepository.save(new Todo("buy milk", LocalDate.now(), owner, parentTodo));
+
+            // act & assert — admin sees every top-level todo, but never a subtask as a standalone entry
+            mockMvc.perform(get("/todos")
+                            .header("Authorization", "Bearer " + token))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$", hasSize(1)))
+                    .andExpect(jsonPath("$[0].id").value(parentTodo.getId()));
         }
     }
 }
