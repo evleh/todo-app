@@ -1,22 +1,15 @@
 package org.example.todoapp.security;
 
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import org.example.todoapp.entity.Role;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
 
 public class UserPrincipal implements UserDetails {
     private final String userId;
     private final String username;
     private final String password;
     private final Collection<? extends GrantedAuthority> authorities;
-
-
 
     public UserPrincipal(String userId, String username, String password, Collection<? extends GrantedAuthority> authorities) {
         this.userId = userId;
