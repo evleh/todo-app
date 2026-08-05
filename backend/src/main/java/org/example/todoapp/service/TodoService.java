@@ -32,7 +32,14 @@ public class TodoService {
     private static TodoResponse toResponse(Todo todo){
         MyUser owner = todo.getOwner();
         String ownerId = owner != null ? owner.getId() : null; // prevent NullPointerException
-        return new TodoResponse(todo.getId(), todo.getTask(), todo.getDue(), todo.isDone(), ownerId);
+        Todo parent = todo.getParent(); 
+        String parentId = parent != null ? parent.getId() : null;
+
+        List<TodoResponse> subtaskResponses = todo.getSubtasks().stream()
+            .map(TodoService::toResponse)
+            .toList();
+
+        return new TodoResponse(todo.getId(), todo.getTask(), todo.getDue(), todo.isDone(), ownerId, parentId, subtaskResponses);    
     }
 
     private void assertOwnerOrAdmin(Todo todo, UserPrincipal principal){
@@ -85,11 +92,11 @@ public class TodoService {
 
     public List<TodoResponse> readAll(UserPrincipal principal){
         if(principal.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))){
-            return todoRepository.findAll().stream().map(TodoService::toResponse).toList();
+            return todoRepository.findByParentIsNull().stream().map(TodoService::toResponse).toList();
         }
 
         MyUser owner = userRepository.findById(principal.getUserId()).orElseThrow(EntityNotFoundException::new);
-        return todoRepository.findByOwner(owner).stream().map(TodoService::toResponse).toList();
+        return todoRepository.findByOwnerAndParentIsNull(owner).stream().map(TodoService::toResponse).toList();
     }
 
     public TodoResponse deleteByID(String id, UserPrincipal principal){

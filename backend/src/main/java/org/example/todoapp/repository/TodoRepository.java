@@ -11,4 +11,9 @@ public interface TodoRepository extends JpaRepository<Todo, String> {
     Optional<Todo> findByTask(String task);
 
     List<Todo> findByOwner(MyUser owner);
+
+    List<Todo> findByParentIsNull(); 
+
+    List<Todo> findByOwnerAndParentIsNull(MyUser owner); 
+
 }
