@@ -16,9 +16,7 @@
   <Accordion v-model:value="openPanels" multiple >
     <AccordionPanel value="0" :disabled="openTodos.length === 0">
       <AccordionHeader>
-        <span class="task-header"> Open Tasks:
-          <span> &nbsp; {{openTodos.length}} </span>
-        </span>
+        <span class="task-header"> Open Tasks:</span>
       </AccordionHeader>
       <AccordionContent>
         <Todos :todos="openTodos" class="tasks"></Todos>
@@ -26,9 +24,7 @@
     </AccordionPanel>
     <AccordionPanel value="1" :disabled="doneTodos.length === 0">
       <AccordionHeader>
-        <span class="task-header"> Completed Tasks:
-          <span> &nbsp; {{doneTodos.length}} </span>
-        </span>
+        <span class="task-header"> Completed Tasks:</span>
       </AccordionHeader>
       <AccordionContent>
         <Todos :todos="doneTodos" class="tasks"></Todos>
