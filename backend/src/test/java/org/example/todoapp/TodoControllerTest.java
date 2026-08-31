@@ -2,6 +2,7 @@ package org.example.todoapp;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.todoapp.dto.TodoCreateRequest;
+import org.example.todoapp.dto.TodoUpdateRequest;
 import org.example.todoapp.dto.TokenRequest;
 import org.example.todoapp.entity.MyUser;
 import org.example.todoapp.entity.Role;
@@ -21,8 +22,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.LocalDate;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -229,5 +232,133 @@ class TodoControllerTest {
                     .andExpect(jsonPath("$", hasSize(1)))
                     .andExpect(jsonPath("$[0].id").value(parentTodo.getId()));
         }
+    }
+
+    @Nested
+    class IndependentLifecycleTests {
+        @Test
+        void markingSubtaskDone_doesNotChangeParentDone() throws Exception {
+            // arrange
+            String token = obtainToken(OWNER_USERNAME);
+            Todo subtask = todoRepository.save(new Todo("buy milk", LocalDate.now(), owner, parentTodo));
+            TodoUpdateRequest request = new TodoUpdateRequest(subtask.getTask(), subtask.getDue(), true);
+
+            // act
+            mockMvc.perform(put("/todos/{id}", subtask.getId())
+                            .header("Authorization", "Bearer " + token)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(request)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.done").value(true));
+
+            // assert — parent untouched
+            mockMvc.perform(get("/todos/{id}", parentTodo.getId())
+                            .header("Authorization", "Bearer " + token))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.done").value(false));
+        }
+
+        @Test
+        void markingParentDone_doesNotChangeSubtaskDone() throws Exception {
+            // arrange
+            String token = obtainToken(OWNER_USERNAME);
+            Todo subtask = todoRepository.save(new Todo("buy milk", LocalDate.now(), owner, parentTodo));
+            TodoUpdateRequest request = new TodoUpdateRequest(parentTodo.getTask(), parentTodo.getDue(), true);
+
+            // act
+            mockMvc.perform(put("/todos/{id}", parentTodo.getId())
+                            .header("Authorization", "Bearer " + token)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(request)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.done").value(true));
+            
+            // assert - subtask untouched
+            mockMvc.perform(get("/todos/{id}", subtask.getId())
+                            .header("Authorization", "Bearer " + token))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.done").value(false));        
+
+        }
+
+        @Test
+        void updatingSubtaskTaskAndDue_updatesIndependentlyOfParent() throws Exception {
+            // arrange
+            String token = obtainToken(OWNER_USERNAME);
+            Todo subtask = todoRepository.save(new Todo("buy milk", LocalDate.now(), owner, parentTodo));
+            LocalDate newDue = LocalDate.now().plusDays(5);
+            TodoUpdateRequest request = new TodoUpdateRequest("buy oat milk", newDue, subtask.isDone());
+
+            // act
+            mockMvc.perform(put("/todos/{id}", subtask.getId())
+                            .header("Authorization", "Bearer " + token)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(request)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.task").value("buy oat milk"))
+                    .andExpect(jsonPath("$.due").value(newDue.toString()));
+
+            // assert — parent's own task/due untouched
+            mockMvc.perform(get("/todos/{id}", parentTodo.getId())
+                            .header("Authorization", "Bearer " + token))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.task").value(parentTodo.getTask()))
+                    .andExpect(jsonPath("$.due").value(parentTodo.getDue().toString()));
+        }
+
+        @Test
+        void deletingSubtask_removesOnlyThatSubtask() throws Exception {
+            // arrange
+            String token = obtainToken(OWNER_USERNAME);
+            Todo subtask1 = todoRepository.save(new Todo("buy milk", LocalDate.now(), owner, parentTodo));
+            Todo subtask2 = todoRepository.save(new Todo("buy bread", LocalDate.now(), owner, parentTodo));
+
+            // act
+            mockMvc.perform(delete("/todos/{id}", subtask1.getId())
+                            .header("Authorization", "Bearer " + token))
+                    .andExpect(status().isOk());
+
+            // assert — deleted subtask is gone
+            mockMvc.perform(get("/todos/{id}", subtask1.getId())
+                            .header("Authorization", "Bearer " + token))
+                    .andExpect(status().isNotFound());
+
+            // assert — sibling untouched
+            mockMvc.perform(get("/todos/{id}", subtask2.getId())
+                            .header("Authorization", "Bearer " + token))
+                    .andExpect(status().isOk());
+
+            // assert — parent survives with only the sibling embedded
+            mockMvc.perform(get("/todos/{id}", parentTodo.getId())
+                            .header("Authorization", "Bearer " + token))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.subtasks", hasSize(1)))
+                    .andExpect(jsonPath("$.subtasks[0].id").value(subtask2.getId()));
+        }
+
+        @Test
+        void deletingParent_cascadesAllSubtasks() throws Exception {
+            // arrange
+            String token = obtainToken(OWNER_USERNAME);
+            Todo subtask1 = todoRepository.save(new Todo("buy milk", LocalDate.now(), owner, parentTodo));
+            Todo subtask2 = todoRepository.save(new Todo("buy bread", LocalDate.now(), owner, parentTodo));
+
+            // act
+            mockMvc.perform(delete("/todos/{id}", parentTodo.getId())
+                            .header("Authorization", "Bearer " + token))
+                    .andExpect(status().isOk());
+
+            // assert — parent and every subtask are gone
+            mockMvc.perform(get("/todos/{id}", parentTodo.getId())
+                            .header("Authorization", "Bearer " + token))
+                    .andExpect(status().isNotFound());
+            mockMvc.perform(get("/todos/{id}", subtask1.getId())
+                            .header("Authorization", "Bearer " + token))
+                    .andExpect(status().isNotFound());
+            mockMvc.perform(get("/todos/{id}", subtask2.getId())
+                            .header("Authorization", "Bearer " + token))
+                    .andExpect(status().isNotFound());
+        }
+
     }
 }
