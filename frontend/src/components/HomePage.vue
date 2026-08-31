@@ -10,7 +10,7 @@
   </RewardAnchor>
 
   <div>
-    <NewTodo class="mb-3" @todo-created="loadTodos"></NewTodo>
+    <NewTodo class="mb-3" @todo-created="loadTodos" :parent-id="null"></NewTodo>
   </div>
 
   <Accordion v-model:value="openPanels" multiple >
@@ -62,7 +62,7 @@ let todos = ref<Array<TodoResponse>>([]);
 const openTodos = computed(() => todos.value.filter(todo => !todo.done));
 const doneTodos = computed(() => todos.value.filter(todo => todo.done));
 
-const loadTodos = async () => {
+const loadTodos = async (): Promise<void> => {
   todos.value = await TodoService.readAll();
 };
 
@@ -113,7 +113,8 @@ function onRewardComplete() {
 .tasks{
   max-height: 40vh;
   overflow-y: auto;
-  padding: 1rem;
+  padding-right: 0.5rem;
+  padding-left: 0.5rem;
 }
 
 .task-header {

@@ -1,15 +1,19 @@
 <template>
-  <div class="card flex flex-col m-2 p-5" v-bind:style="{background: '#1112', color: 'black'}">
+  <div class="flex flex-col" v-bind:style="{color: 'black', background: 'pink', 'border-radius': '10px'}">
     <div v-for="(item, index) in todos">
-      <Todo :todo="item"
-            :index="index"
-            :key="item.id"/>
+      <!-- Recursive rendering of subtask -->
+      <TodoNode 
+        :todo="item"
+        :index="index"
+        :key="item.id"
+      />
+
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import Todo from "./Todo.vue";
+import TodoNode from "./TodoNode.vue";
 
 const {todos} = defineProps(['todos']);
 

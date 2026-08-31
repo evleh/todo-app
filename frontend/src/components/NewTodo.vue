@@ -1,11 +1,24 @@
 <script setup lang="ts">
-import {ref} from "vue";
+import {ref, onMounted} from "vue";
 import {TodoService} from "../services/TodoService.ts";
 import Button from "primevue/button";
 import InputText from "primevue/inputtext";
 import Message from "primevue/message";
 import {Form} from "@primevue/forms";
 import { useToast } from "primevue/usetoast";
+
+const props = withDefaults(defineProps<{
+  parentId: string | null;
+  autoFocus?: boolean;
+}>(), {parentId: null, autoFocus: false});
+
+const taskInputRef = ref();
+
+onMounted(() => {
+  if (props.autoFocus) {
+    taskInputRef.value?.$el?.focus();
+  }
+});
 
 const toast = useToast();
 
@@ -19,13 +32,16 @@ const initialValues = ref({
 });
 
 const onFormSubmit =  async ({valid, values}) => {
-  if (valid){
-    try {
-      await TodoService.create({task: values.task, due: values.due});
-      emit('todoCreated');
-    } catch (error){
-      toast.add({ severity: 'error', summary: 'Error when creating new task.', life: 3000 });
-    }
+  if (!valid) return; 
+
+  try {
+    props.parentId ? 
+      await TodoService.createSubtask({task: values.task, due: values.due}, props.parentId) : 
+      await TodoService.create({task: values.task, due: values.due}); 
+    
+    emit('todoCreated');
+  } catch (error){
+    toast.add({ severity: 'error', summary: 'Error when creating new (Sub)task.', life: 3000 });
   }
 }
 
@@ -43,13 +59,17 @@ const resolver = ({ values }) => {
 };
 </script>
 
-<template><Form v-slot="$form" :initialValues :resolver @submit="onFormSubmit" class="flex gap-2 p-4 items-start">
+<template>
+  <Form v-slot="$form" :initialValues :resolver @submit="onFormSubmit" class="flex gap-1 p-2 items-start">
     <div class="flex flex-col gap-1 grow">
-      <InputText name="task" type="text" placeholder="New Task"/>
+      <InputText ref="taskInputRef" name="task" type="text" placeholder="New Task"/>
       <Message v-if="$form.task?.invalid" severity="error" size="small" variant="simple">{{ $form.task.error?.message }}</Message>
     </div>
+    
     <InputText name="due" type="date" placeholder="due" />
-    <Button type="submit" label="Add Todo" />
+    <Button type="submit" 
+      icon="pi pi-plus"
+    />
   </Form>
 </template>
 
