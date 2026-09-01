@@ -10,15 +10,13 @@
   </RewardAnchor>
 
   <div>
-    <NewTodo class="mb-3" @todo-created="loadTodos"></NewTodo>
+    <NewTodo class="mb-3" @todo-created="loadTodos" :parent-id="null"></NewTodo>
   </div>
 
   <Accordion v-model:value="openPanels" multiple >
     <AccordionPanel value="0" :disabled="openTodos.length === 0">
       <AccordionHeader>
-        <span class="task-header"> Open Tasks:
-          <span> &nbsp; {{openTodos.length}} </span>
-        </span>
+        <span class="task-header"> Open Tasks:</span>
       </AccordionHeader>
       <AccordionContent>
         <Todos :todos="openTodos" class="tasks"></Todos>
@@ -26,9 +24,7 @@
     </AccordionPanel>
     <AccordionPanel value="1" :disabled="doneTodos.length === 0">
       <AccordionHeader>
-        <span class="task-header"> Completed Tasks:
-          <span> &nbsp; {{doneTodos.length}} </span>
-        </span>
+        <span class="task-header"> Completed Tasks:</span>
       </AccordionHeader>
       <AccordionContent>
         <Todos :todos="doneTodos" class="tasks"></Todos>
@@ -62,7 +58,7 @@ let todos = ref<Array<TodoResponse>>([]);
 const openTodos = computed(() => todos.value.filter(todo => !todo.done));
 const doneTodos = computed(() => todos.value.filter(todo => todo.done));
 
-const loadTodos = async () => {
+const loadTodos = async (): Promise<void> => {
   todos.value = await TodoService.readAll();
 };
 
@@ -113,7 +109,8 @@ function onRewardComplete() {
 .tasks{
   max-height: 40vh;
   overflow-y: auto;
-  padding: 1rem;
+  padding-right: 0.5rem;
+  padding-left: 0.5rem;
 }
 
 .task-header {

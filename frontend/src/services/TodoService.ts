@@ -20,6 +20,14 @@ export class TodoService{
         return response.data;
     }
 
+    static async createSubtask(request: TodoCreateRequest, parentId: string){
+        const subtaskURL = `${URL_TODOS}/${parentId}/subtasks`
+        const response = await axios.post(subtaskURL , request, {
+            headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }
+        });
+        return response.data;
+    }
+
     static async update(request: TodoUpdateRequest){
         const response = await axios.put(`${URL_TODOS}/${request.id}`, request, {
             headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }
