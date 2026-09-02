@@ -49,4 +49,8 @@ Issues are tracked in GitHub Issues for `evleh/todo-app`, using the `gh` CLI. Se
 
 ### Domain docs
 
-Single-context layout — one `CONTEXT.md` + `docs/adr/` at the repo root (not yet created; created lazily by domain-modeling skill). See `docs/agents/domain.md`.
+Single-context layout — one `CONTEXT.md` + `docs/adr/` at the repo root. See `docs/agents/domain.md`.
+
+### Learning-Driven Development
+
+Non-trivial commits are gated by a quiz on the staged diff before they're allowed through. See `docs/agents/learning-driven-development.md`.
