@@ -38,3 +38,4 @@ build/
 ### my stuff ###
 ../../03_DM/beispiele/SQL/sqlBsp/SQLcheat.md
 .scratch/
+.claude/ldd-quiz-passed
