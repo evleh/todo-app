@@ -8,6 +8,7 @@ const pgclient = new Client({
     database: 'postgres'
 });
 
+
 pgclient.connect();
 
 const table = 'CREATE TABLE student(id SERIAL PRIMARY KEY, firstName VARCHAR(40) NOT NULL, lastName VARCHAR(40) NOT NULL, age INT, address VARCHAR(80), email VARCHAR(40))'
