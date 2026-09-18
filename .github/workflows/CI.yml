@@ -17,8 +17,26 @@ on:
 jobs:
   
   backend_tests:
-    # The type of runner that the job will run on
+    # Runner
     runs-on: ubuntu-latest
+
+    # Docker service container for postgres bd
+    services:
+      # label used to access the service container
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_USER: eww
+          POSTGRES_PASSWORD: eww
+          POSTGRES_DB: todoapp
+          
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -31,6 +49,12 @@ jobs:
           distribution: temurin
           java-version: '21'
       - run: java --version
+
+      - name: Connect to PostgreSQL
+        run: docker compose up
+        env:
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: 5432
 
       - name: start_backend
         working-directory: ./backend
