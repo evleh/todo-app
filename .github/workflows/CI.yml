@@ -19,8 +19,6 @@ jobs:
   backend_tests:
     # Runner
     runs-on: ubuntu-latest
-    # Docker Hub image that `container-job` executes in
-    #container: node:20-bookworm-slim
 
     # Docker service container for postgres bd
     services:
@@ -54,7 +52,7 @@ jobs:
           java-version: '21'
       - run: java --version
 
-      - name: run_tests
+      - name: Run Tests
         working-directory: ./backend
         run: ./mvnw test
           
