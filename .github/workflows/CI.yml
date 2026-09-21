@@ -54,7 +54,7 @@ jobs:
           java-version: '21'
       - run: java --version
 
-      - name: start_backend
+      - name: run_tests
         working-directory: ./backend
-        run: ./mvnw spring-boot:run
+        run: ./mvnw test
           
