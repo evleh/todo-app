@@ -72,8 +72,7 @@ jobs:
           node-version: '22.20.x'
           package-manager-cache: false # Disable automatic npm caching if not required
       - run:
-          ls -la
-          pwd
+          ls -la; pwd
       - run: npm ci
         #working-directory: ./frontend
       
