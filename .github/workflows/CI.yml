@@ -30,7 +30,7 @@ jobs:
         env:
           POSTGRES_USER: eww
           POSTGRES_PASSWORD: eww
-          POSTGRES_DB: todoapp_test
+          POSTGRES_DB: todoapp
           
         # Set health checks to wait until postgres has started
         options: >-
