@@ -31,13 +31,15 @@ const initialValues = ref({
   due: ''
 });
 
-const onFormSubmit =  async ({valid, values}) => {
-  if (!valid) return; 
+const onFormSubmit =  async ({valid, values}: {valid: boolean; values: Record<string, unknown>}) => {
+  if (!valid) return;
+
+  const request = {task: values.task as string, due: values.due as string};
 
   try {
-    props.parentId ? 
-      await TodoService.createSubtask({task: values.task, due: values.due}, props.parentId) : 
-      await TodoService.create({task: values.task, due: values.due}); 
+    props.parentId ?
+      await TodoService.createSubtask(request, props.parentId) :
+      await TodoService.create(request);
     
     emit('todoCreated');
   } catch (error){
@@ -45,8 +47,8 @@ const onFormSubmit =  async ({valid, values}) => {
   }
 }
 
-const resolver = ({ values }) => {
-  const errors = {};
+const resolver = ({ values }: {values: Record<string, unknown>}) => {
+  const errors: Record<string, { message: string }[]> = {};
 
   if (!values.task) {
     errors.task = [{ message: 'Task is required.' }];

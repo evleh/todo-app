@@ -43,10 +43,10 @@ const resolver = zodResolver(
     })
 );
 
-const onFormSubmit = async ({ valid, values }) => {
+const onFormSubmit = async ({ valid, values }: { valid: boolean; values: Record<string, unknown> }) => {
   if (valid) {
     try {
-      await AuthService.login({username: values.username, password: values.password});
+      await AuthService.login({username: values.username as string, password: values.password as string});
       await router.push("/home");
       toast.add({ severity: 'success', summary: 'Login was successful.', life: 3000 });
     } catch (e) {

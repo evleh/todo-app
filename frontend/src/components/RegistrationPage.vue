@@ -43,10 +43,10 @@ const resolver = zodResolver(
     })
 );
 
-const onFormSubmit = async ({ valid, values }) => {
+const onFormSubmit = async ({ valid, values }: {valid: boolean; values: Record<string, string>}) => {
   if (valid) {
     try {
-      await UserService.createUser({username: values.username, password: values.password});
+      await UserService.createUser({"username": values.username, "password": values.password});
       toast.add({ severity: 'success', summary: 'Registration was successful.', life: 3000 });
       await router.push("/");
     } catch (e) {

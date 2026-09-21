@@ -19,8 +19,8 @@ const toast = useToast();
 const props = defineProps(['todo', 'isExpanded']);
 const initialValues = ref({ task: props.todo.task, done: props.todo.done });
 const dueDate = ref<Date | null>(parseDue(props.todo.due));
-const loadTodos = inject<() => Promise<void>>('loadTodos');
-const showReward = inject<() => void>('showReward'); 
+const loadTodos = inject<() => Promise<void>>('loadTodos', async () => {});
+const showReward = inject<() => void>('showReward', () => {});
 
 function parseDue(due: unknown): Date | null {
   if (!due) return null;
@@ -84,8 +84,8 @@ const onFormSubmit = ({valid, values}: {valid: boolean; values: Record<string, u
   saveTodo(values.task as string, formatDue(dueDate.value));
 }
 
-const resolver = ({ values }) => {
-  const errors = {};
+const resolver = ({ values }: {values: Record<string, unknown>}) => {
+  const errors: Record<string, { message: string }[]> = {};
 
   if (!values.task) {
     errors.task = [{ message: 'Task is required.' }];

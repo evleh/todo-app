@@ -16,7 +16,7 @@ const router = createRouter({
     routes: routes,
 });
 
-router.beforeEach((to, from) => {
+router.beforeEach((to) => {
     const isLoggedIn = localStorage.getItem("accessToken") !== null;
     if (to.meta.requiresAuth && !isLoggedIn) {
         router.push("/");
