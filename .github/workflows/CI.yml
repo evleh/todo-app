@@ -59,6 +59,9 @@ jobs:
   
   build_frontend:
     runs-on: ubuntu-latest
+    defaults: 
+      run: 
+        working-directory: ./frontend
     
     steps:
       - name: setup 
@@ -68,9 +71,9 @@ jobs:
           package-manager-cache: false # Disable automatic npm caching if not required
         
       - run: npm ci
-        working-directory: ./frontend
+        #working-directory: ./frontend
       
       - name: build
-        working-directory: ./frontend
+        #working-directory: ./frontend
         run: npm run build
           
