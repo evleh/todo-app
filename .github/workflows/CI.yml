@@ -20,7 +20,7 @@ jobs:
     # Runner
     runs-on: ubuntu-latest
     # Docker Hub image that `container-job` executes in
-    container: node:20-bookworm-slim
+    #container: node:20-bookworm-slim
 
     # Docker service container for postgres bd
     services:
@@ -28,7 +28,9 @@ jobs:
       postgres:
         image: postgres
         env:
-          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: eww
+          POSTGRES_PASSWORD: eww
+          POSTGRES_DB: todoapp_test
           
         # Set health checks to wait until postgres has started
         options: >-
@@ -36,6 +38,9 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 5432:5432
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -48,25 +53,6 @@ jobs:
           distribution: temurin
           java-version: '21'
       - run: java --version
-
-      # Performs a clean installation of all dependencies in the `package.json` file
-      # For more information, see https://docs.npmjs.com/cli/ci.html
-      #- name: Install dependencies
-      #  run: npm ci
-
-      - name: Connect to PostgreSQL
-        working-directory: ./backend
-        # Runs a script that creates a PostgreSQL table, populates
-        # the table with data, and then retrieves the data.
-        run: 
-          pwd 
-          node client.js
-        # Environment variables used by the `client.js` script to create a new PostgreSQL table.
-        env:
-          # The hostname used to communicate with the PostgreSQL service container
-          POSTGRES_HOST: postgres
-          # The default PostgreSQL port
-          POSTGRES_PORT: 5432
 
       - name: start_backend
         working-directory: ./backend
