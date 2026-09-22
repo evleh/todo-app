@@ -79,7 +79,7 @@ const onFormBlur = ($form: any) => {
   saveTodo($form.task?.value, formatDue(dueDate.value));
 }
 
-const onFormSubmit = ({valid, values}: {valid: boolean; values: Record<string, unknown>}) => {
+const onFormSubmit = ({valid, values}) => {
   if (!valid) return;
   saveTodo(values.task as string, formatDue(dueDate.value));
 }
