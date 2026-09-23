@@ -1,5 +1,7 @@
 # Todo App
 
+![CI](https://github.com/evleh/todo-app/actions/workflows/CI.yml/badge.svg)
+
 A full-stack todo application with a Spring Boot 3 / Java 21 REST API backend and a Vue 3 frontend.
 Started as example code from a backend development course and extended independently to practice and refine full-stack fundamentals — including layered architecture, database persistence, authentication, authorization, and frontend-backend integration.
 Also serves as a testbed for learning how to best use Claude Code as a development tool.
@@ -107,6 +109,13 @@ Controller  →  Service  →  Repository
 cd backend
 ./mvnw test
 ```
+
+## Continuous Integration
+
+GitHub Actions (`.github/workflows/CI.yml`) runs on every push and pull request to `master`, and can also be triggered manually:
+
+- **`backend_tests`** — starts a PostgreSQL service container and runs `./mvnw test` against it.
+- **`build_frontend`** — installs dependencies with `npm ci` and runs `npm run build`.
 
 ## Known Limitations / What's next
 
