@@ -48,11 +48,13 @@ class AuthControllerTest {
     private static final String USERNAME = "auth-test-user";
     private static final String PASSWORD = "test-password";
 
+    private MyUser user; 
+
     @BeforeEach
     void setUp() {
         userRepository.deleteAll();
 
-        MyUser user = new MyUser();
+        user = new MyUser();
         user.setUsername(USERNAME);
         user.setPassword(passwordEncoder.encode(PASSWORD));
         userRepository.save(user);
@@ -143,7 +145,7 @@ class AuthControllerTest {
                     .asText();
 
             // act and assert
-            mockMvc.perform(get("/users")
+            mockMvc.perform(get("/users/{id}", user.getId())
                             .header("Authorization", "Bearer " + token))
                     .andExpect(status().isOk());
         }
