@@ -42,6 +42,7 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable);
         // Stateless session: each request is authenticated independently via the JWT — no server-side session.
         http.sessionManagement(conf -> conf.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        // disable default Form-Login 
         http.formLogin(AbstractHttpConfigurer::disable);
         // Public routes: registration, login, and API docs. Everything else requires a valid JWT.
         http.authorizeHttpRequests(
