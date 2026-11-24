@@ -40,7 +40,8 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             );
         } catch (JwtException e) {
             // Invalid or expired token — do not set authentication.
-            // Spring Security will reject the request as 401 at the authorization step.
+            // Spring Security will reject the request 
+            // Request should be rejected with 401 -> requires configuration -> currently rejected with 403 
         }
 
         filterChain.doFilter(request, response);

@@ -8,9 +8,8 @@ import org.example.todoapp.entity.Todo;
 import org.example.todoapp.exception.EntityNotFoundException;
 import org.example.todoapp.exception.InvalidSubtaskParentException;
 import org.example.todoapp.exception.PermissionDeniedException;
-import org.example.todoapp.exception.TodoIdNotFoundException;
 import org.example.todoapp.repository.TodoRepository;
-import org.example.todoapp.exception.TodoAlreadyExcistsException;
+import org.example.todoapp.exception.TodoAlreadyExistsException;
 import org.example.todoapp.repository.UserRepository;
 import org.example.todoapp.security.UserPrincipal;
 import org.springframework.stereotype.Service;
@@ -50,7 +49,7 @@ public class TodoService {
     }
 
     public TodoResponse update(String id, TodoUpdateRequest request, UserPrincipal principal){
-        Todo todo = todoRepository.findById(id).orElseThrow(TodoIdNotFoundException::new);
+        Todo todo = todoRepository.findById(id).orElseThrow(EntityNotFoundException::new);
 
         assertOwnerOrAdmin(todo, principal);
 
@@ -67,7 +66,7 @@ public class TodoService {
 
         Optional<Todo> todoCheck = todoRepository.findByTask(todo.task());
         if(todoCheck.isPresent()){
-            throw new TodoAlreadyExcistsException();
+            throw new TodoAlreadyExistsException();
         }
         Todo toSave = new Todo(todo.task(), todo.due(), creator);
         Todo saved = todoRepository.save(toSave);
@@ -75,7 +74,7 @@ public class TodoService {
     }
 
     public TodoResponse createSubtask(TodoCreateRequest todo, UserPrincipal principal, String parentId){
-        Todo parent = todoRepository.findById(parentId).orElseThrow(TodoIdNotFoundException::new);
+        Todo parent = todoRepository.findById(parentId).orElseThrow(EntityNotFoundException::new);
         assertOwnerOrAdmin(parent, principal); 
         
         if (parent.getParent() != null) throw new InvalidSubtaskParentException(); 
@@ -86,7 +85,7 @@ public class TodoService {
     }
 
     public TodoResponse read(String id){
-        Todo todo = todoRepository.findById(id).orElseThrow(TodoIdNotFoundException::new);
+        Todo todo = todoRepository.findById(id).orElseThrow(EntityNotFoundException::new);
         return toResponse(todo);
     }
 
@@ -100,7 +99,7 @@ public class TodoService {
     }
 
     public TodoResponse deleteByID(String id, UserPrincipal principal){
-        Todo todo = todoRepository.findById(id).orElseThrow(TodoIdNotFoundException::new);
+        Todo todo = todoRepository.findById(id).orElseThrow(EntityNotFoundException::new);
         assertOwnerOrAdmin(todo, principal);
         todoRepository.deleteById(id);
         return toResponse(todo);

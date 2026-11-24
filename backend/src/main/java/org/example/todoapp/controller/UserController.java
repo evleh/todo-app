@@ -5,6 +5,7 @@ import org.example.todoapp.dto.UserCreateRequest;
 import org.example.todoapp.dto.UserResponse;
 import org.example.todoapp.dto.UserUpdateRequest;
 import org.example.todoapp.service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +22,7 @@ public class UserController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public UserResponse create(@RequestBody @Valid UserCreateRequest registration) {
         return userService.create(registration);
     }

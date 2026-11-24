@@ -8,7 +8,6 @@ import org.example.todoapp.entity.Todo;
 import org.example.todoapp.exception.EntityNotFoundException;
 import org.example.todoapp.exception.InvalidSubtaskParentException;
 import org.example.todoapp.exception.PermissionDeniedException;
-import org.example.todoapp.exception.TodoIdNotFoundException;
 import org.example.todoapp.repository.TodoRepository;
 import org.example.todoapp.repository.UserRepository;
 import org.example.todoapp.security.UserPrincipal;
@@ -250,7 +249,7 @@ public class TodoServiceTests {
             when(todoRepository.findById("missingId")).thenReturn(Optional.empty());
 
             // act & assert
-            assertThrows(TodoIdNotFoundException.class, () -> todoService.read("missingId"));
+            assertThrows(EntityNotFoundException.class, () -> todoService.read("missingId"));
         }
     }
 
@@ -352,7 +351,7 @@ public class TodoServiceTests {
             when(todoRepository.findById("missingParentId")).thenReturn(Optional.empty());
 
             // act & assert
-            assertThrows(TodoIdNotFoundException.class,
+            assertThrows(EntityNotFoundException.class,
                     () -> todoService.createSubtask(request, creator, "missingParentId"));
             verify(todoRepository, never()).save(any());
         }
