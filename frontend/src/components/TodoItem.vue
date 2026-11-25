@@ -23,9 +23,9 @@ const dueDate = ref<Date | null>(parseDue(props.todo.due));
 const loadTodos = inject<() => Promise<void>>('loadTodos', async () => {});
 const showReward = inject<() => void>('showReward', () => {});
 
-function parseDue(due: unknown): Date | null {
+function parseDue(due: string | null): Date | null {
   if (!due) return null;
-  const [y, m, d] = String(due).split('T')[0].split('-').map(Number);
+  const [y, m, d] = due.split('-').map(Number);
   return new Date(y, m - 1, d);
 }
 
