@@ -84,6 +84,7 @@ const onFormSubmit = async ({ valid, values }: {valid: boolean; values: Record<s
       toast.add({ severity: 'success', summary: 'Registration was successful.', life: 3000 });
       await router.push("/");
     } catch (e) {
+      console.error(e);
       toast.add({ severity: 'error', summary: 'Registration was not successful.', life: 3000 });
     }
   }

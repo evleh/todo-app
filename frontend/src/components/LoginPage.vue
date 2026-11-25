@@ -60,7 +60,7 @@ import Button from 'primevue/button';
 import Message from 'primevue/message';
 import { zodResolver } from '@primevue/forms/resolvers/zod';
 import { useToast } from "primevue/usetoast";
-import {AuthService} from "../services/AuthService.ts";
+import { AuthService } from "../services/AuthService.ts";
 import { z } from 'zod';
 import router from "../router.ts";
 
@@ -70,26 +70,26 @@ const initialValues = ref({
   password: ''
 });
 
+
 const resolver = zodResolver(
-    z.object({
-      username: z.string().min(1, { message: 'Username is required.' }),
-      password: z.string().min(1, { message: 'Password is required.' })
-    })
+  z.object({
+    username: z.string().min(1, { message: 'Username is required.' }),
+    password: z.string().min(1, { message: 'Password is required.' })
+  })
 );
 
 const onFormSubmit = async ({ valid, values }: { valid: boolean; values: Record<string, unknown> }) => {
   if (valid) {
     try {
-      await AuthService.login({username: values.username as string, password: values.password as string});
+      await AuthService.login({ username: values.username as string, password: values.password as string });
       await router.push("/home");
       toast.add({ severity: 'success', summary: 'Login was successful.', life: 3000 });
     } catch (e) {
+      console.error(e);
       toast.add({ severity: 'error', summary: 'Login was not successful.', life: 3000 });
     }
   }
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
