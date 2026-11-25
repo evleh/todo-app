@@ -3,10 +3,12 @@
     class="flex flex-col"
     :style="{color: 'black', background: 'pink', 'border-radius': '10px'}"
   >
-    <div v-for="(item, index) in todos">
+    <div
+      v-for="(item, index) in todos"
+      :key="item.id"
+    >
       <!-- Recursive rendering of subtask -->
       <TodoNode 
-        :key="item.id"
         :todo="item"
         :index="index"
       />
