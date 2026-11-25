@@ -16,8 +16,9 @@
 
 <script setup lang="ts">
 import TodoNode from "./TodoNode.vue";
+import type { TodoResponse } from "../models/TodoResponse.ts";
 
-const {todos} = defineProps(['todos']);
+const {todos} = defineProps<{todos:Array<TodoResponse>}>();
 
 </script>
 

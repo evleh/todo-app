@@ -9,6 +9,7 @@ import DatePicker from 'primevue/datepicker';
 import Message from "primevue/message";
 import { useToast } from "primevue/usetoast";
 import NewTodo from './NewTodo.vue';
+import type { TodoResponse } from '../models/TodoResponse.ts';
 
 const emit = defineEmits<{
   completed: []
@@ -16,7 +17,7 @@ const emit = defineEmits<{
 }>();
 
 const toast = useToast();
-const props = defineProps(['todo', 'isExpanded']);
+const props = defineProps<{todo: TodoResponse; isExpanded: boolean}>();
 const initialValues = ref({ task: props.todo.task, done: props.todo.done });
 const dueDate = ref<Date | null>(parseDue(props.todo.due));
 const loadTodos = inject<() => Promise<void>>('loadTodos', async () => {});
