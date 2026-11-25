@@ -1,7 +1,8 @@
 <template>
-    <div ref="containerRef"
-        style="position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none;"
-    ></div>
+  <div
+    ref="containerRef"
+    style="position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none;"
+  />
 </template>
 
 <script setup lang="ts">

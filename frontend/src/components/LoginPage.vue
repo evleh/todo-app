@@ -1,17 +1,51 @@
 <template>
   <div class="flex-1 flex justify-center items-start p-4">
     <div class="card w-full max-w-sm">
-      <Form v-slot="$form" :resolver="resolver" :initialValues="initialValues" @submit="onFormSubmit" class="flex flex-col gap-4 w-full">
+      <Form
+        v-slot="$form"
+        :resolver="resolver"
+        :initial-values="initialValues"
+        class="flex flex-col gap-4 w-full"
+        @submit="onFormSubmit"
+      >
         <h2>Login</h2>
         <div class="flex flex-col gap-1">
-          <InputText name="username" type="text" placeholder="Username" fluid />
-          <Message v-if="$form.username?.invalid" severity="error" size="small" variant="simple">{{ $form.username.error?.message }}</Message>
+          <InputText
+            name="username"
+            type="text"
+            placeholder="Username"
+            fluid
+          />
+          <Message
+            v-if="$form.username?.invalid"
+            severity="error"
+            size="small"
+            variant="simple"
+          >
+            {{ $form.username.error?.message }}
+          </Message>
         </div>
         <div class="flex flex-col gap-1">
-          <InputText name="password" type="password" placeholder="Password" fluid />
-          <Message v-if="$form.password?.invalid" severity="error" size="small" variant="simple">{{ $form.password.error?.message }}</Message>
+          <InputText
+            name="password"
+            type="password"
+            placeholder="Password"
+            fluid
+          />
+          <Message
+            v-if="$form.password?.invalid"
+            severity="error"
+            size="small"
+            variant="simple"
+          >
+            {{ $form.password.error?.message }}
+          </Message>
         </div>
-        <Button type="submit" severity="secondary" label="Submit" />
+        <Button
+          type="submit"
+          severity="secondary"
+          label="Submit"
+        />
         <RouterLink to="/register">Not registered? Sign up here.</RouterLink>
       </Form>
     </div>

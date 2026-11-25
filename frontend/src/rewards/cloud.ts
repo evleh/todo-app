@@ -2,8 +2,8 @@ import type p5 from 'p5';
 import type { SketchApi } from './rewards';
 
 export const cloudSketch = (p: p5, {onComplete, getSize}: SketchApi) => {
-  let x1 = 180, x2 = 142, x3 = 170, x4 = 215;
-  let y = 50; 
+  const x1 = 180, x2 = 142, x3 = 170, x4 = 215;
+  const y = 50; 
 
   p.setup = () => {
     const {width, height} = getSize(); 

@@ -123,47 +123,76 @@ const onSubtaskFormFocusOut = (e: FocusEvent) => {
 <template>
   <div class="todo">
     <div>
-
-
-      <Form v-slot="$form" class="flex-col justify-center" :initialValues="initialValues" @submit="onFormSubmit" :resolver>
+      <Form
+        v-slot="$form"
+        class="flex-col justify-center"
+        :initial-values="initialValues"
+        :resolver
+        @submit="onFormSubmit"
+      >
         <div class="group flex items-center gap-2">
-          <Checkbox name="done" binary @click="toggleDone"/>
-          <InputText name="task" type="text" placeholder="Your Task" fluid
+          <Checkbox
+            name="done"
+            binary
+            @click="toggleDone"
+          />
+          <InputText
+            name="task"
+            type="text"
+            placeholder="Your Task"
+            fluid
             :class="{ 'task-done': props.todo.done }"
             @blur="onFormBlur($form)"
           />
-          <DatePicker v-model="dueDate" dateFormat="dd-mm-yy" placeholder="No due date" class="w-36"
+          <DatePicker
+            v-model="dueDate"
+            date-format="dd-mm-yy"
+            placeholder="No due date"
+            class="w-36"
             @date-select="onFormBlur($form)"
             @blur="onFormBlur($form)"
           />
           <div class="row-actions w-16 flex items-center justify-end gap-1 opacity-40 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
-            <Button icon="pi pi-plus"
+            <Button
               v-if="props.todo?.parentId == null"
+              v-tooltip.top="{ value: 'Add subtask.', escape: false}"
+              icon="pi pi-plus"
               text
               severity="secondary"
-              @click="createSubtask"
-              v-tooltip.top="{ value: 'Add subtask.', escape: false}"
               aria-label="Add Subtask"
+              @click="createSubtask"
             />
-            <Button icon="pi pi-trash" aria-label="Delete" text severity="danger" @click="deleteTodo"/>
+            <Button
+              icon="pi pi-trash"
+              aria-label="Delete"
+              text
+              severity="danger"
+              @click="deleteTodo"
+            />
           </div>
         </div>
         <div class="pl-[1.75rem]">
-          <Message v-if="$form.task?.invalid" severity="error" size="small" variant="simple">{{$form.task.error?.message}}</Message>
+          <Message
+            v-if="$form.task?.invalid"
+            severity="error"
+            size="small"
+            variant="simple"
+          >
+            {{ $form.task.error?.message }}
+          </Message>
         </div>
-
       </Form>
     </div>
 
-    <NewTodo v-if="isAddingSubtask && isExpanded"
+    <NewTodo
+      v-if="isAddingSubtask && isExpanded"
       :parent-id="props.todo.id"
       :auto-focus="true"
+      class="create-subtask"
       @todo-created="onSubtaskCreated"
       @focusout="onSubtaskFormFocusOut"
-      class="create-subtask"
     />
   </div>
-  
 </template>
 
 <style scoped>

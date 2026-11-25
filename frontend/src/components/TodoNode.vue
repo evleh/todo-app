@@ -19,7 +19,6 @@ const sortedSubtasks = computed(() =>
 </script>
 
 <template>
-  
   <div class="flex">
     <!-- expand / collaps subtask, with a connector line directly beneath it when expanded -->
     <div class="flex flex-col items-center">
@@ -33,17 +32,27 @@ const sortedSubtasks = computed(() =>
         class="mt-2"
         @click="isExpanded = !isExpanded"
       />
-      <div v-if="todo.subtasks.length > 0 && isExpanded" class="w-px flex-1 my-1 bg-[var(--p-button-text-secondary-color)]"></div>
+      <div
+        v-if="todo.subtasks.length > 0 && isExpanded"
+        class="w-px flex-1 my-1 bg-[var(--p-button-text-secondary-color)]"
+      />
     </div>
 
     <div class="flex flex-col flex-1 min-w-0">
-      <Todo :todo="todo" :is-expanded="isExpanded" @expand-subtasks="isExpanded = true" />
+      <Todo
+        :todo="todo"
+        :is-expanded="isExpanded"
+        @expand-subtasks="isExpanded = true"
+      />
 
-      <div v-show="todo.subtasks.length > 0 && isExpanded" class="pl-7 flex flex-col">
+      <div
+        v-show="todo.subtasks.length > 0 && isExpanded"
+        class="pl-7 flex flex-col"
+      >
         <TodoNode
           v-for="subtask in sortedSubtasks"
-          :todo="subtask"
           :key="subtask.id"
+          :todo="subtask"
         />
       </div>
     </div>

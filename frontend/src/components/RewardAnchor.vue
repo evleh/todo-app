@@ -12,8 +12,14 @@ const emit = defineEmits<{ complete: [] }>();
 
 <template>
   <div class="reward-anchor">
-    <RewardPlayer :active="show" :animation="reward" @complete="emit('complete')" />
-    <div class="reward-anchor-content"><slot /></div>
+    <RewardPlayer
+      :active="show"
+      :animation="reward"
+      @complete="emit('complete')"
+    />
+    <div class="reward-anchor-content">
+      <slot />
+    </div>
   </div>
 </template>
 

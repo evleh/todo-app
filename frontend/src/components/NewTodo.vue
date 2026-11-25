@@ -62,14 +62,37 @@ const resolver = ({ values }: {values: Record<string, unknown>}) => {
 </script>
 
 <template>
-  <Form v-slot="$form" :initialValues :resolver @submit="onFormSubmit" class="flex gap-1 p-2 items-start">
+  <Form
+    v-slot="$form"
+    :initial-values
+    :resolver
+    class="flex gap-1 p-2 items-start"
+    @submit="onFormSubmit"
+  >
     <div class="flex flex-col gap-1 grow">
-      <InputText ref="taskInputRef" name="task" type="text" placeholder="New Task"/>
-      <Message v-if="$form.task?.invalid" severity="error" size="small" variant="simple">{{ $form.task.error?.message }}</Message>
+      <InputText
+        ref="taskInputRef"
+        name="task"
+        type="text"
+        placeholder="New Task"
+      />
+      <Message
+        v-if="$form.task?.invalid"
+        severity="error"
+        size="small"
+        variant="simple"
+      >
+        {{ $form.task.error?.message }}
+      </Message>
     </div>
     
-    <InputText name="due" type="date" placeholder="due" />
-    <Button type="submit" 
+    <InputText
+      name="due"
+      type="date"
+      placeholder="due"
+    />
+    <Button
+      type="submit" 
       icon="pi pi-plus"
     />
   </Form>
