@@ -35,7 +35,7 @@
         <span class="task-header"> Open Tasks:</span>
       </AccordionHeader>
       <AccordionContent>
-        <Todos
+        <TodoList
           :todos="openTodos"
           class="tasks"
         />
@@ -49,7 +49,7 @@
         <span class="task-header"> Completed Tasks:</span>
       </AccordionHeader>
       <AccordionContent>
-        <Todos
+        <TodoList
           :todos="doneTodos"
           class="tasks"
         />
@@ -65,7 +65,7 @@ import type {TodoResponse} from "../models/TodoResponse.ts";
 import {TodoService} from "../services/TodoService.ts";
 import router from "../router.ts";
 import {AuthService} from "../services/AuthService.ts";
-import Todos from "./Todos.vue";
+import TodoList from "./TodoList.vue";
 import Button from 'primevue/button';
 import NewTodo from "./NewTodo.vue";
 import Accordion from 'primevue/accordion';

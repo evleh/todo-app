@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { TodoResponse } from "../models/TodoResponse.ts";
-import Todo from "./Todo.vue";
+import TodoItem from "./TodoItem.vue";
 import {ref, computed} from 'vue';
 import Button from 'primevue/button';
 
@@ -39,7 +39,7 @@ const sortedSubtasks = computed(() =>
     </div>
 
     <div class="flex flex-col flex-1 min-w-0">
-      <Todo
+      <TodoItem
         :todo="todo"
         :is-expanded="isExpanded"
         @expand-subtasks="isExpanded = true"
