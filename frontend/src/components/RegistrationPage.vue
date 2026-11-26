@@ -1,17 +1,51 @@
 <template>
   <div class="flex-1 flex justify-center items-start p-4">
     <div class="card w-full max-w-sm">
-      <Form v-slot="$form" :resolver="resolver" :initialValues="initialValues" @submit="onFormSubmit" class="flex flex-col gap-4 w-full">
+      <Form
+        v-slot="$form"
+        :resolver="resolver"
+        :initial-values="initialValues"
+        class="flex flex-col gap-4 w-full"
+        @submit="onFormSubmit"
+      >
         <h2>Sign up</h2>
         <div class="flex flex-col gap-1">
-          <InputText name="username" type="text" placeholder="Username" fluid />
-          <Message v-if="$form.username?.invalid" severity="error" size="small" variant="simple">{{ $form.username.error?.message }}</Message>
+          <InputText
+            name="username"
+            type="text"
+            placeholder="Username"
+            fluid
+          />
+          <Message
+            v-if="$form.username?.invalid"
+            severity="error"
+            size="small"
+            variant="simple"
+          >
+            {{ $form.username.error?.message }}
+          </Message>
         </div>
         <div class="flex flex-col gap-1">
-          <InputText name="password" type="password" placeholder="Password" fluid />
-          <Message v-if="$form.password?.invalid" severity="error" size="small" variant="simple">{{ $form.password.error?.message }}</Message>
+          <InputText
+            name="password"
+            type="password"
+            placeholder="Password"
+            fluid
+          />
+          <Message
+            v-if="$form.password?.invalid"
+            severity="error"
+            size="small"
+            variant="simple"
+          >
+            {{ $form.password.error?.message }}
+          </Message>
         </div>
-        <Button type="submit" severity="secondary" label="Register" />
+        <Button
+          type="submit"
+          severity="secondary"
+          label="Register"
+        />
         <RouterLink to="/">Already registered? Sign in here.</RouterLink>
       </Form>
     </div>
@@ -50,6 +84,7 @@ const onFormSubmit = async ({ valid, values }: {valid: boolean; values: Record<s
       toast.add({ severity: 'success', summary: 'Registration was successful.', life: 3000 });
       await router.push("/");
     } catch (e) {
+      console.error(e);
       toast.add({ severity: 'error', summary: 'Registration was not successful.', life: 3000 });
     }
   }

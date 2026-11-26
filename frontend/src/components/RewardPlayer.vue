@@ -1,7 +1,8 @@
 <template>
-    <div ref="containerRef"
-        style="position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none;"
-    ></div>
+  <div
+    ref="containerRef"
+    style="position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none;"
+  />
 </template>
 
 <script setup lang="ts">
@@ -50,7 +51,13 @@ function cleanup() {
     p5Instance = null;
 }
 
-watch(() => props.active, (val) => { val ? start() : cleanup(); });
+watch(() => props.active, (val) => { 
+    if (val){
+        start(); 
+    } else {
+        cleanup();
+    } 
+});
 onBeforeUnmount(cleanup);
 </script>
 

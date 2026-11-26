@@ -1,47 +1,71 @@
-<template >
+<template>
   <RewardAnchor
     class="header"
     :show="isHeaderAnchorActive"
     :reward="currentReward"
     @complete="onRewardComplete"
   >
-    <Button style="align-self: flex-end" class="m-3" @click="logout">Logout</Button>
+    <Button
+      style="align-self: flex-end"
+      class="m-3"
+      @click="logout"
+    >
+      Logout
+    </Button>
     <h1>Todo App</h1>
   </RewardAnchor>
 
   <div>
-    <NewTodo class="mb-3" @todo-created="loadTodos" :parent-id="null"></NewTodo>
+    <NewTodo
+      class="mb-3"
+      :parent-id="null"
+      @todo-created="loadTodos"
+    />
   </div>
 
-  <Accordion v-model:value="openPanels" multiple >
-    <AccordionPanel value="0" :disabled="openTodos.length === 0">
+  <Accordion
+    v-model:value="openPanels"
+    multiple
+  >
+    <AccordionPanel
+      value="0"
+      :disabled="openTodos.length === 0"
+    >
       <AccordionHeader>
         <span class="task-header"> Open Tasks:</span>
       </AccordionHeader>
       <AccordionContent>
-        <Todos :todos="openTodos" class="tasks"></Todos>
+        <TodoList
+          :todos="openTodos"
+          class="tasks"
+        />
       </AccordionContent>
     </AccordionPanel>
-    <AccordionPanel value="1" :disabled="doneTodos.length === 0">
+    <AccordionPanel
+      value="1"
+      :disabled="doneTodos.length === 0"
+    >
       <AccordionHeader>
         <span class="task-header"> Completed Tasks:</span>
       </AccordionHeader>
       <AccordionContent>
-        <Todos :todos="doneTodos" class="tasks"></Todos>
+        <TodoList
+          :todos="doneTodos"
+          class="tasks"
+        />
       </AccordionContent>
     </AccordionPanel>
   </Accordion>
-
 </template>
 
 <script setup lang="ts">
-import {onBeforeMount} from "@vue/runtime-core";
+import {onBeforeMount} from "vue";
 import {ref, provide, computed, watch} from "vue";
 import type {TodoResponse} from "../models/TodoResponse.ts";
 import {TodoService} from "../services/TodoService.ts";
 import router from "../router.ts";
 import {AuthService} from "../services/AuthService.ts";
-import Todos from "./Todos.vue";
+import TodoList from "./TodoList.vue";
 import Button from 'primevue/button';
 import NewTodo from "./NewTodo.vue";
 import Accordion from 'primevue/accordion';
@@ -53,7 +77,7 @@ import { randomReward } from '../rewards/rewards.ts';
 import type { RewardMeta } from '../rewards/rewards.ts';
 
 // todos: data
-let todos = ref<Array<TodoResponse>>([]);
+const todos = ref<Array<TodoResponse>>([]);
 
 const openTodos = computed(() => todos.value.filter(todo => !todo.done));
 const doneTodos = computed(() => todos.value.filter(todo => todo.done));

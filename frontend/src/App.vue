@@ -4,5 +4,5 @@ import Toast from "primevue/toast";
 
 <template>
   <Toast />
-  <RouterView></RouterView>
+  <RouterView />
 </template>

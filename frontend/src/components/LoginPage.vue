@@ -1,17 +1,51 @@
 <template>
   <div class="flex-1 flex justify-center items-start p-4">
     <div class="card w-full max-w-sm">
-      <Form v-slot="$form" :resolver="resolver" :initialValues="initialValues" @submit="onFormSubmit" class="flex flex-col gap-4 w-full">
+      <Form
+        v-slot="$form"
+        :resolver="resolver"
+        :initial-values="initialValues"
+        class="flex flex-col gap-4 w-full"
+        @submit="onFormSubmit"
+      >
         <h2>Login</h2>
         <div class="flex flex-col gap-1">
-          <InputText name="username" type="text" placeholder="Username" fluid />
-          <Message v-if="$form.username?.invalid" severity="error" size="small" variant="simple">{{ $form.username.error?.message }}</Message>
+          <InputText
+            name="username"
+            type="text"
+            placeholder="Username"
+            fluid
+          />
+          <Message
+            v-if="$form.username?.invalid"
+            severity="error"
+            size="small"
+            variant="simple"
+          >
+            {{ $form.username.error?.message }}
+          </Message>
         </div>
         <div class="flex flex-col gap-1">
-          <InputText name="password" type="password" placeholder="Password" fluid />
-          <Message v-if="$form.password?.invalid" severity="error" size="small" variant="simple">{{ $form.password.error?.message }}</Message>
+          <InputText
+            name="password"
+            type="password"
+            placeholder="Password"
+            fluid
+          />
+          <Message
+            v-if="$form.password?.invalid"
+            severity="error"
+            size="small"
+            variant="simple"
+          >
+            {{ $form.password.error?.message }}
+          </Message>
         </div>
-        <Button type="submit" severity="secondary" label="Submit" />
+        <Button
+          type="submit"
+          severity="secondary"
+          label="Submit"
+        />
         <RouterLink to="/register">Not registered? Sign up here.</RouterLink>
       </Form>
     </div>
@@ -26,7 +60,7 @@ import Button from 'primevue/button';
 import Message from 'primevue/message';
 import { zodResolver } from '@primevue/forms/resolvers/zod';
 import { useToast } from "primevue/usetoast";
-import {AuthService} from "../services/AuthService.ts";
+import { AuthService } from "../services/AuthService.ts";
 import { z } from 'zod';
 import router from "../router.ts";
 
@@ -36,26 +70,26 @@ const initialValues = ref({
   password: ''
 });
 
+
 const resolver = zodResolver(
-    z.object({
-      username: z.string().min(1, { message: 'Username is required.' }),
-      password: z.string().min(1, { message: 'Password is required.' })
-    })
+  z.object({
+    username: z.string().min(1, { message: 'Username is required.' }),
+    password: z.string().min(1, { message: 'Password is required.' })
+  })
 );
 
 const onFormSubmit = async ({ valid, values }: { valid: boolean; values: Record<string, unknown> }) => {
   if (valid) {
     try {
-      await AuthService.login({username: values.username as string, password: values.password as string});
+      await AuthService.login({ username: values.username as string, password: values.password as string });
       await router.push("/home");
       toast.add({ severity: 'success', summary: 'Login was successful.', life: 3000 });
     } catch (e) {
+      console.error(e);
       toast.add({ severity: 'error', summary: 'Login was not successful.', life: 3000 });
     }
   }
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

@@ -8,7 +8,7 @@ import {Form} from "@primevue/forms";
 import { useToast } from "primevue/usetoast";
 
 const props = withDefaults(defineProps<{
-  parentId: string | null;
+  parentId?: string | null;
   autoFocus?: boolean;
 }>(), {parentId: null, autoFocus: false});
 
@@ -37,12 +37,15 @@ const onFormSubmit =  async ({valid, values}: {valid: boolean; values: Record<st
   const request = {task: values.task as string, due: values.due as string};
 
   try {
-    props.parentId ?
-      await TodoService.createSubtask(request, props.parentId) :
+    if (props.parentId !== null){
+      await TodoService.createSubtask(request, props.parentId); 
+    } else {
       await TodoService.create(request);
+    }
     
     emit('todoCreated');
-  } catch (error){
+  } catch (e){
+    console.error(e);
     toast.add({ severity: 'error', summary: 'Error when creating new (Sub)task.', life: 3000 });
   }
 }
@@ -50,7 +53,7 @@ const onFormSubmit =  async ({valid, values}: {valid: boolean; values: Record<st
 const resolver = ({ values }: {values: Record<string, unknown>}) => {
   const errors: Record<string, { message: string }[]> = {};
 
-  if (!values.task) {
+  if (typeof values.task !== 'string' || values.task.trim() === '') {
     errors.task = [{ message: 'Task is required.' }];
   }
 
@@ -62,14 +65,37 @@ const resolver = ({ values }: {values: Record<string, unknown>}) => {
 </script>
 
 <template>
-  <Form v-slot="$form" :initialValues :resolver @submit="onFormSubmit" class="flex gap-1 p-2 items-start">
+  <Form
+    v-slot="$form"
+    :initial-values
+    :resolver
+    class="flex gap-1 p-2 items-start"
+    @submit="onFormSubmit"
+  >
     <div class="flex flex-col gap-1 grow">
-      <InputText ref="taskInputRef" name="task" type="text" placeholder="New Task"/>
-      <Message v-if="$form.task?.invalid" severity="error" size="small" variant="simple">{{ $form.task.error?.message }}</Message>
+      <InputText
+        ref="taskInputRef"
+        name="task"
+        type="text"
+        placeholder="New Task"
+      />
+      <Message
+        v-if="$form.task?.invalid"
+        severity="error"
+        size="small"
+        variant="simple"
+      >
+        {{ $form.task.error?.message }}
+      </Message>
     </div>
     
-    <InputText name="due" type="date" placeholder="due" />
-    <Button type="submit" 
+    <InputText
+      name="due"
+      type="date"
+      placeholder="due"
+    />
+    <Button
+      type="submit" 
       icon="pi pi-plus"
     />
   </Form>

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { FormFieldState } from "@primevue/forms";
 import InputText from 'primevue/inputtext';
 import {Form} from "@primevue/forms";
 import Checkbox from 'primevue/checkbox';
@@ -9,6 +10,7 @@ import DatePicker from 'primevue/datepicker';
 import Message from "primevue/message";
 import { useToast } from "primevue/usetoast";
 import NewTodo from './NewTodo.vue';
+import type { TodoResponse } from '../models/TodoResponse.ts';
 
 const emit = defineEmits<{
   completed: []
@@ -16,15 +18,15 @@ const emit = defineEmits<{
 }>();
 
 const toast = useToast();
-const props = defineProps(['todo', 'isExpanded']);
+const props = defineProps<{todo: TodoResponse; isExpanded: boolean}>();
 const initialValues = ref({ task: props.todo.task, done: props.todo.done });
 const dueDate = ref<Date | null>(parseDue(props.todo.due));
 const loadTodos = inject<() => Promise<void>>('loadTodos', async () => {});
 const showReward = inject<() => void>('showReward', () => {});
 
-function parseDue(due: unknown): Date | null {
+function parseDue(due: string | null): Date | null {
   if (!due) return null;
-  const [y, m, d] = String(due).split('T')[0].split('-').map(Number);
+  const [y, m, d] = due.split('-').map(Number);
   return new Date(y, m - 1, d);
 }
 
@@ -74,9 +76,9 @@ const saveTodo = async (task: string, due: string | null) => {
 }
 
 // auto-save: text/due commit on blur, not via an explicit save button
-const onFormBlur = ($form: any) => {
-  if ($form.task?.invalid) return;
-  saveTodo($form.task?.value, formatDue(dueDate.value));
+const onFormBlur = (task: FormFieldState) => {
+  if (!task || task.invalid) return;
+  saveTodo(task.value, formatDue(dueDate.value));
 }
 
 const onFormSubmit = ({valid, values}: {valid: boolean; values: Record<string, unknown>}) => {
@@ -86,8 +88,7 @@ const onFormSubmit = ({valid, values}: {valid: boolean; values: Record<string, u
 
 const resolver = ({ values }: {values: Record<string, unknown>}) => {
   const errors: Record<string, { message: string }[]> = {};
-
-  if (!values.task) {
+  if (typeof values.task !== 'string' || values.task.trim() === '') {
     errors.task = [{ message: 'Task is required.' }];
   }
 
@@ -123,47 +124,76 @@ const onSubtaskFormFocusOut = (e: FocusEvent) => {
 <template>
   <div class="todo">
     <div>
-
-
-      <Form v-slot="$form" class="flex-col justify-center" :initialValues="initialValues" @submit="onFormSubmit" :resolver>
+      <Form
+        v-slot="$form"
+        class="flex-col justify-center"
+        :initial-values="initialValues"
+        :resolver
+        @submit="onFormSubmit"
+      >
         <div class="group flex items-center gap-2">
-          <Checkbox name="done" binary @click="toggleDone"/>
-          <InputText name="task" type="text" placeholder="Your Task" fluid
-            :class="{ 'task-done': props.todo.done }"
-            @blur="onFormBlur($form)"
+          <Checkbox
+            name="done"
+            binary
+            @click="toggleDone"
           />
-          <DatePicker v-model="dueDate" dateFormat="dd-mm-yy" placeholder="No due date" class="w-36"
-            @date-select="onFormBlur($form)"
-            @blur="onFormBlur($form)"
+          <InputText
+            name="task"
+            type="text"
+            placeholder="Your Task"
+            fluid
+            :class="{ 'task-done': props.todo.done }"
+            @blur="onFormBlur($form.task)"
+          />
+          <DatePicker
+            v-model="dueDate"
+            date-format="dd-mm-yy"
+            placeholder="No due date"
+            class="w-36"
+            @date-select="onFormBlur($form.task)"
+            @blur="onFormBlur($form.task)"
           />
           <div class="row-actions w-16 flex items-center justify-end gap-1 opacity-40 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
-            <Button icon="pi pi-plus"
+            <Button
               v-if="props.todo?.parentId == null"
+              v-tooltip.top="{ value: 'Add subtask.', escape: false}"
+              icon="pi pi-plus"
               text
               severity="secondary"
-              @click="createSubtask"
-              v-tooltip.top="{ value: 'Add subtask.', escape: false}"
               aria-label="Add Subtask"
+              @click="createSubtask"
             />
-            <Button icon="pi pi-trash" aria-label="Delete" text severity="danger" @click="deleteTodo"/>
+            <Button
+              icon="pi pi-trash"
+              aria-label="Delete"
+              text
+              severity="danger"
+              @click="deleteTodo"
+            />
           </div>
         </div>
         <div class="pl-[1.75rem]">
-          <Message v-if="$form.task?.invalid" severity="error" size="small" variant="simple">{{$form.task.error?.message}}</Message>
+          <Message
+            v-if="$form.task?.invalid"
+            severity="error"
+            size="small"
+            variant="simple"
+          >
+            {{ $form.task.error?.message }}
+          </Message>
         </div>
-
       </Form>
     </div>
 
-    <NewTodo v-if="isAddingSubtask && isExpanded"
+    <NewTodo
+      v-if="isAddingSubtask && isExpanded"
       :parent-id="props.todo.id"
       :auto-focus="true"
+      class="create-subtask"
       @todo-created="onSubtaskCreated"
       @focusout="onSubtaskFormFocusOut"
-      class="create-subtask"
     />
   </div>
-  
 </template>
 
 <style scoped>
