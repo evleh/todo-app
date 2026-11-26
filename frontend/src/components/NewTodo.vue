@@ -8,7 +8,7 @@ import {Form} from "@primevue/forms";
 import { useToast } from "primevue/usetoast";
 
 const props = withDefaults(defineProps<{
-  parentId: string | null;
+  parentId?: string | null;
   autoFocus?: boolean;
 }>(), {parentId: null, autoFocus: false});
 
