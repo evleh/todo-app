@@ -51,7 +51,13 @@ function cleanup() {
     p5Instance = null;
 }
 
-watch(() => props.active, (val) => { val ? start() : cleanup(); });
+watch(() => props.active, (val) => { 
+    if (val){
+        start(); 
+    } else {
+        cleanup();
+    } 
+});
 onBeforeUnmount(cleanup);
 </script>
 
