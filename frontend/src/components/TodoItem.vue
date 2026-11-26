@@ -88,8 +88,7 @@ const onFormSubmit = ({valid, values}: {valid: boolean; values: Record<string, u
 
 const resolver = ({ values }: {values: Record<string, unknown>}) => {
   const errors: Record<string, { message: string }[]> = {};
-
-  if (!values.task) {
+  if (typeof values.task !== 'string' || values.task.trim() === '') {
     errors.task = [{ message: 'Task is required.' }];
   }
 
