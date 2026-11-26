@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { FormFieldState } from "@primevue/forms";
 import InputText from 'primevue/inputtext';
 import {Form} from "@primevue/forms";
 import Checkbox from 'primevue/checkbox';
@@ -75,9 +76,9 @@ const saveTodo = async (task: string, due: string | null) => {
 }
 
 // auto-save: text/due commit on blur, not via an explicit save button
-const onFormBlur = ($form: any) => {
-  if ($form.task?.invalid) return;
-  saveTodo($form.task?.value, formatDue(dueDate.value));
+const onFormBlur = (task: FormFieldState) => {
+  if (!task || task.invalid) return;
+  saveTodo(task.value, formatDue(dueDate.value));
 }
 
 const onFormSubmit = ({valid, values}: {valid: boolean; values: Record<string, unknown>}) => {
@@ -143,15 +144,15 @@ const onSubtaskFormFocusOut = (e: FocusEvent) => {
             placeholder="Your Task"
             fluid
             :class="{ 'task-done': props.todo.done }"
-            @blur="onFormBlur($form)"
+            @blur="onFormBlur($form.task)"
           />
           <DatePicker
             v-model="dueDate"
             date-format="dd-mm-yy"
             placeholder="No due date"
             class="w-36"
-            @date-select="onFormBlur($form)"
-            @blur="onFormBlur($form)"
+            @date-select="onFormBlur($form.task)"
+            @blur="onFormBlur($form.task)"
           />
           <div class="row-actions w-16 flex items-center justify-end gap-1 opacity-40 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
             <Button
