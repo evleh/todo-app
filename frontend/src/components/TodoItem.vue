@@ -76,7 +76,7 @@ const saveTodo = async (task: string, due: string | null) => {
 }
 
 // auto-save: text/due commit on blur, not via an explicit save button
-const onFormBlur = (task: any) => {
+const onFormBlur = (task: FormFieldState) => {
   if (!task || task.invalid) return;
   saveTodo(task.value, formatDue(dueDate.value));
 }
