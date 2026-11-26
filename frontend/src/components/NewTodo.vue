@@ -37,7 +37,7 @@ const onFormSubmit =  async ({valid, values}: {valid: boolean; values: Record<st
   const request = {task: values.task as string, due: values.due as string};
 
   try {
-    if (props.parentId){
+    if (props.parentId !== null){
       await TodoService.createSubtask(request, props.parentId); 
     } else {
       await TodoService.create(request);
