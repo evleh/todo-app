@@ -14,6 +14,8 @@ This is additive to the Learning output style (insights, `[JUNIOR]/[MID]/[SENIOR
 
 **Scope**: fires only when Claude runs `git commit` inside a session. A manual commit from the terminal or an IDE bypasses it — this is a deliberate trade-off (session-context quizzing over blanket coverage), not an oversight.
 
+**Start Claude Code from the repo root.** Project hooks are loaded from `.claude/settings.json` in the directory Claude Code was launched in, not from parent directories. A session started in `frontend/` never registers the gate, so commits pass silently. Changing into `frontend/` *during* a root-launched session is fine — the hook resolves the repo root itself.
+
 **Trivial-change filter**: the hook inspects the staged diff (`git diff --cached --numstat`). It only engages if at least one `.java`, `.ts`, `.vue`, or `.js` file changed and the total changed lines (excluding `.md`/`.json`/`.yml`/`.yaml`/`.xml`/gitignore-type files) exceeds 10. Docs, config, and small diffs pass through silently. `git commit --amend` is treated like any other commit — it re-triggers if the amended diff is itself non-trivial.
 
 **Stage and commit separately**: the hook runs *before* the Bash command, so in `git add X && git commit` nothing is staged yet when it reads the diff. Any command that contains `git add`, or `git commit` with `-a`/`--all`, is therefore denied with an instruction to stage in a separate call first. Known false positive: a commit message containing `git add` or ` -a` is also denied — reword it or stage separately.

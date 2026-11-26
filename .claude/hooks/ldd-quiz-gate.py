@@ -6,6 +6,7 @@ import hashlib
 import json
 import os
 import re
+import shlex
 import subprocess
 import sys
 
@@ -102,7 +103,10 @@ def main():
         "programming principle(s) behind it. Grade their answers yourself.\n"
         "Only once they demonstrably understand the change, clear the gate by running "
         "exactly this, then retry the commit:\n"
-        f"  mkdir -p .claude && echo '{diff_hash}' > .claude/ldd-quiz-passed\n"
+        # Absolute path: Claude may run this from a subfolder (e.g. frontend/), and a
+        # relative path would write the marker where this hook never looks.
+        f"  mkdir -p {shlex.quote(os.path.dirname(marker_path))} && "
+        f"echo '{diff_hash}' > {shlex.quote(marker_path)}\n"
         "If they can't explain it, don't clear the gate — help them understand the "
         "code first, then quiz again."
     )
