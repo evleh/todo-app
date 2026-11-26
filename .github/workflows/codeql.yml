@@ -1,0 +1,56 @@
+# Static security analysis with GitHub CodeQL.
+# Findings appear in the PR ("Files changed" annotations + "Code scanning" check)
+# and under the repo's Security tab -> Code scanning.
+
+name: CodeQL
+
+on:
+  # Triggers: push to master & PR into master branch
+  push:
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
+
+# Cancel older in-progress runs on the same branch/PR when a new commit is pushed
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    # Least privilege: CodeQL only needs to read code and upload results
+    permissions:
+      contents: read
+      security-events: write
+
+    # One job per language, running in parallel
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - language: java-kotlin # backend/
+            build-mode: none # analyse source directly, no Maven build needed
+          - language: javascript-typescript # frontend/ (Vue + TS)
+            build-mode: none
+          - language: actions # the workflow files themselves
+            build-mode: none
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: ${{ matrix.build-mode }}
+          # "security-extended" = default security queries + more (slightly noisier)
+          queries: security-extended
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: "/language:${{ matrix.language }}"
