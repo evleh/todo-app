@@ -112,10 +112,26 @@ cd backend
 
 ## Continuous Integration
 
-GitHub Actions (`.github/workflows/CI.yml`) runs on every push and pull request to `master`, and can also be triggered manually:
+Every pull request to `master` passes through three automated checks, from strict to advisory:
+
+### CI — tests, lint, build (`.github/workflows/CI.yml`)
+
+Runs on every push and pull request to `master`, and can also be triggered manually:
 
 - **`backend_tests`** — starts a PostgreSQL service container and runs `./mvnw test` against it.
-- **`build_frontend`** — installs dependencies with `npm ci` and runs `npm run build`.
+- **`build_frontend`** — installs dependencies with `npm ci`, runs ESLint (`npm run lint`) and `npm run build`.
+
+### CodeQL — security analysis (`.github/workflows/codeql.yml`)
+
+Runs on every push and pull request to `master`. Scans the backend (`java-kotlin`), the frontend (`javascript-typescript`) and the workflow files (`actions`) with the `security-extended` query suite. Findings are annotated on the PR and listed under **Security → Code scanning**. The push runs on `master` provide the baseline, so a PR is only flagged for findings it introduces.
+
+### Claude Review — AI code review (`.github/workflows/claude-review.yml`)
+
+Runs on every non-draft pull request to `master` and posts inline comments plus one summary comment. The review focus is defined in the workflow's `prompt` (authorization, correctness, architecture, tests, readability, README).
+
+- **Advisory only** — it never blocks a merge; CI and CodeQL are the hard gates.
+- **Trusted authors only** — runs only for PRs from repository owners, members or collaborators (`author_association`), because PR content is untrusted input to the model. PRs from anyone else, including forks, are **skipped silently**: a missing review is not a pass.
+- **Setup** — requires the repository secret `CLAUDE_CODE_OAUTH_TOKEN` (create it with `claude setup-token`).
 
 ## Known Limitations / What's next
 
