@@ -83,6 +83,11 @@ jobs:
             - Finish with ONE summary comment: verdict + top 3 issues.
             - Skip style nits that ESLint or CodeQL already cover.
 
-          # Only the tools needed to read the PR and write comments - no shell, no edits
+          # --allowedTools adds allow rules: these calls are approved without asking.
+          # Unlisted tools stay available; calls that need approval fall through to the
+          # permission mode. Read-only tools (Read, Glob, Grep) need none, so they work.
+          # --disallowedTools adds deny rules: these calls are always refused, whatever
+          # permission mode the action runs in. Makes "no edits" hold by config.
           claude_args: |
             --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)"
+            --disallowedTools "Edit,Write,NotebookEdit"
