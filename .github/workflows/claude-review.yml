@@ -1,0 +1,94 @@
+# AI code review with Claude on every PR into master.
+# Posts inline comments on specific lines + one summary comment.
+# Advisory only: this job never blocks a merge (CI.yml + CodeQL do that).
+#
+# Setup (once): store a token from `claude setup-token` as the repo secret
+# CLAUDE_CODE_OAUTH_TOKEN (gh secret set CLAUDE_CODE_OAUTH_TOKEN).
+
+name: Claude Review
+
+on:
+  pull_request:
+    branches: ["master"]
+    # opened = new PR, synchronize = new commits pushed, reopened, ready_for_review = draft -> ready
+    types: [opened, synchronize, reopened, ready_for_review]
+
+# Only one review per PR at a time; a new push cancels the outdated review
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    # Skip draft PRs: no point reviewing unfinished work (saves usage limit)
+    # Only for trusted authors: PR content is untrusted input to the model (prompt injection)
+    if: >-
+      github.event.pull_request.draft == false &&
+      contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.pull_request.author_association)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    # Least privilege: read code, write PR comments - nothing else
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      # Pinned to a SHA like the Claude action: this job holds a write token and a secret
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 1
+
+      - name: Claude PR review
+        # Pinned to a commit SHA (not the movable "v1" tag): this third-party action
+        # receives our OAuth token, so a hijacked tag must not be able to swap the code.
+        uses: anthropics/claude-code-action@4411a9e9b0283becf4b924f7bce360fd7756c78c # v1.0.290
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          # Use the workflow's own token instead of installing the Claude GitHub App
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+          prompt: |
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ github.event.pull_request.number }}
+
+            You are reviewing a pull request in a Spring Boot 3 / Java 21 backend
+            (backend/) with a Vue 3 + TypeScript frontend (frontend/).
+            Read CLAUDE.md and CONTEXT.md first for project conventions.
+
+            Review focus (most important first):
+            1. Authorization: a user may only access objects they own (unless
+               ADMIN). Every new or changed endpoint that takes an id must check
+               ownership of that specific object, not just that the user is
+               logged in. See CLAUDE.md for how this project enforces it.
+            2. Correctness: missing null/empty checks, wrong HTTP status codes,
+               exceptions not mapped (EntityNotFoundException -> 404,
+               PermissionDeniedException -> 403).
+            3. Architecture: Controller -> Service -> Repository, no repository
+               calls in controllers; API endpoints accept and return DTOs from
+               dto/, never entities.
+            4. Tests: new or changed logic has a test; error cases (403, 404,
+               invalid input) are covered, not only the happy path.
+            5. Readability: unclear names for variables, methods and classes;
+               code that could be simpler. Suggest the concrete better version.
+            6. Documentation: does the change make README.md outdated? Check
+               especially: API Overview (new/changed/removed endpoints), Getting
+               Started (new setup steps, env vars), Architecture, Running Tests,
+               Continuous Integration, Known Limitations.
+
+            Rules:
+            - Only comment inline on lines changed in this PR.
+            - Missing updates to unchanged files (e.g. README.md) go into the
+              summary comment, naming the section that needs updating.
+            - Use inline comments for concrete issues, each with a suggested fix.
+            - Finish with ONE summary comment: verdict + top 3 issues.
+            - Skip style nits that ESLint or CodeQL already cover.
+
+          # --allowedTools adds allow rules: these calls are approved without asking.
+          # Unlisted tools stay available; calls that need approval fall through to the
+          # permission mode. Read-only tools (Read, Glob, Grep) need none, so they work.
+          # --disallowedTools adds deny rules: these calls are always refused, whatever
+          # permission mode the action runs in. Makes "no edits" hold by config.
+          claude_args: |
+            --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)"
+            --disallowedTools "Edit,Write,NotebookEdit"
